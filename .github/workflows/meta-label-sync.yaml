@@ -25,7 +25,7 @@ on:
     - cron: "0 0 * * *" # Every day at midnight
 
 env:
-  LABEL_SYNC_CONFIG_FILE: "${{ inputs.config-file || '.github/configs/labeler.yaml' }}"
+  LABEL_SYNC_CONFIG_FILE: "${{ inputs.config-file || '.github/configs/labels.yaml' }}"
 
 jobs:
   label-sync:
