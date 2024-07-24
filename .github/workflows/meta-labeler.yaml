@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Labeler
+
+on:
+  workflow_dispatch:
+    inputs:
+      config-file:
+        type: string
+        description: Path to the labeler config file.
+        default: .github/configs/labeler.yaml
+
+  workflow_call:
+    inputs:
+      config-file:
+        type: string
+        description: Path to the labeler config file.
+        default: .github/configs/labeler.yaml
+
+  pull_request_target:
+    branches: [ "main" ]
+
+
+env:
+  LABELER_CONFIG_FILE: "${{ inputs.config-file || '.github/configs/labeler.yaml' }}"
+
+jobs:
+  size-label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Size Label
+        uses: pascalgn/size-label-action@v0.5.2
+        env:
+          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+
+  labeler:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Labeler
+        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5.0.0
+        with:
+          configuration-path: "${{ env.LABELER_CONFIG_FILE }}"
+          sync-labels: true
+          repo-token: "${{ steps.app-token.outputs.token }}"
