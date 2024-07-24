@@ -1,0 +1,22 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"packageRules": [
+		// ============================================================================================
+		// GitHub Actions
+		// ============================================================================================
+		{
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["major"],
+			"commitMessagePrefix": "deps(actions)!: ",
+			"commitMessageTopic": "{{depName}}",
+			"commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
+		},
+		{
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch", "digest"],
+			"commitMessagePrefix": "deps(actions): ",
+			"commitMessageTopic": "{{depName}}",
+			"commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
+		},
+	]
+}
