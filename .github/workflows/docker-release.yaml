@@ -30,7 +30,7 @@ on:
 env:
   DOCKERFILE: "${{ inputs.dockerfile || './Dockerfile' }}"
   BUILD_CONTEXT: "${{ inputs.context || '.' }}"
-  BUILD_PLATFORMS: "${{ inputs.context || 'linux/amd64' }}"
+  BUILD_PLATFORMS: "${{ inputs.platforms || 'linux/amd64' }}"
   BUILD_ARGS: "${{ inputs.build-args || '' }}"
 
 jobs:
