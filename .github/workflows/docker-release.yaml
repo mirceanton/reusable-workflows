@@ -33,11 +33,11 @@ on:
         required: false
 
 env:
-  DOCKER_PUSH: "${{ inputs.dryRun == true }}"
-  DOCKER_FILE: "${{ inputs.dockerfile || './Dockerfile' }}"
-  DOCKER_CONTEXT: "${{ inputs.context || '.' }}"
-  DOCKER_PLATFORMS: "${{ inputs.context || 'linux/amd64' }}"
-  DOCKER_BUILDARGS: "${{ inputs.build-args || '' }}"
+  DRYRUN: "${{ inputs.dryRun == true }}"
+  DOCKERFILE: "${{ inputs.dockerfile || './Dockerfile' }}"
+  BUILD_CONTEXT: "${{ inputs.context || '.' }}"
+  BUILD_PLATFORMS: "${{ inputs.context || 'linux/amd64' }}"
+  BUILD_ARGS: "${{ inputs.build-args || '' }}"
 
 jobs:
   build-image:
@@ -82,10 +82,10 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@5176d81f87c23d6fc96624dfdbcd9f3830bbe445 # v6.5.0
         with:
-          context: "${{ env.DOCKER_CONTEXT }}"
-          file: "${{ env.DOCKER_FILE }}"
-          platforms: "${{ env.DOCKER_PLATFORMS }}"
-          push: "${{ env.DOCKER_PUSH }}"
+          context: "${{ env.BUILD_CONTEXT }}"
+          file: "${{ env.DOCKERFILE }}"
+          platforms: "${{ env.BUILD_PLATFORMS }}"
+          push: "${{ env.DRYRUN == false }}"
           tags: "${{ steps.meta.outputs.tags }}"
           labels: "${{ steps.meta.outputs.labels }}"
-          build-args: "${{ env.DOCKER_BUILDARGS }}"
+          build-args: "${{ env.BUILD_ARGS }}"
