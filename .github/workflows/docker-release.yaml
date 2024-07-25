@@ -7,8 +7,8 @@ on:
       platforms:
         type: string
         description: The OS arches for which to build the docker image.
-        default: amd64
-        required: true
+        default: linux/amd64
+        required: false
       custom-tag:
         type: string
         description: Additional custom tags for the image.
@@ -16,13 +16,11 @@ on:
       context:
         type: string
         description: The context for the docker build command.
-        default: "."
-        required: true
+        required: false
       dockerfile:
         type: string
         description: The path to the dockerfile to build.
-        default: "./Dockerfile"
-        required: true
+        required: false
       dryRun:
         type: boolean
         description: Whether or not to push the image to the registry.
@@ -77,8 +75,8 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@5176d81f87c23d6fc96624dfdbcd9f3830bbe445 # v6.5.0
         with:
-          context: ${{ inputs.context }}
-          file: ${{ inputs.dockerfile }}
+          context: ${{ inputs.context || "." }}
+          file: ${{ inputs.dockerfile || "./Dockerfile" }}
           platforms: ${{ inputs.platforms }}
           push: ${{ inputs.dryrun == false }}
           tags: ${{ steps.meta.outputs.tags }}
