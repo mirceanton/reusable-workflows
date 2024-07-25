@@ -25,12 +25,19 @@ on:
         type: boolean
         description: Whether or not to push the image to the registry.
         default: false
-        required: true
+        required: false
       build-args:
         type: string
         description: Additional build args to pass to the build command.
         default: ""
         required: false
+
+env:
+  DOCKER_PUSH: "${{ inputs.dryRun == true }}"
+  DOCKER_FILE: "${{ inputs.dockerfile || './Dockerfile' }}"
+  DOCKER_CONTEXT: "${{ inputs.context || '.' }}"
+  DOCKER_PLATFORMS: "${{ inputs.context || 'linux/amd64' }}"
+  DOCKER_BUILDARGS: "${{ inputs.build-args || '' }}"
 
 jobs:
   build-image:
@@ -75,10 +82,10 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@5176d81f87c23d6fc96624dfdbcd9f3830bbe445 # v6.5.0
         with:
-          context: ${{ inputs.context || "." }}
-          file: ${{ inputs.dockerfile || "./Dockerfile" }}
-          platforms: ${{ inputs.platforms }}
-          push: ${{ inputs.dryrun == false }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: ${{ inputs.build-args }}
+          context: "${{ env.DOCKER_CONTEXT }}"
+          file: "${{ env.DOCKER_FILE }}"
+          platforms: "${{ env.DOCKER_PLATFORMS }}"
+          push: "${{ env.DOCKER_PUSH }}"
+          tags: "${{ steps.meta.outputs.tags }}"
+          labels: "${{ steps.meta.outputs.labels }}"
+          build-args: "${{ env.DOCKER_BUILDARGS }}"
