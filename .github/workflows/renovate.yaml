@@ -19,7 +19,7 @@ on:
       dryRun:
         type: boolean
         description: Dry Run
-        default: "false"
+        default: false
         required: false
       logLevel:
         type: string
