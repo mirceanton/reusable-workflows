@@ -27,7 +27,6 @@ env:
 jobs:
   size-label:
     runs-on: ubuntu-latest
-
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
@@ -43,11 +42,6 @@ jobs:
 
   labeler:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      pull-requests: write
-
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
