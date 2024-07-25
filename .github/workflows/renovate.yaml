@@ -30,13 +30,6 @@ on:
   schedule:
     - cron: "0 * * * *"  # hourly
 
-  push:
-    branches: [ main ]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true
-
 env:
   LOG_LEVEL: "${{ inputs.logLevel || 'debug' }}"
   RENOVATE_AUTODISCOVER: true
