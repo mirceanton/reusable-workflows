@@ -33,7 +33,7 @@ on:
         required: false
 
 env:
-  DRYRUN: "${{ inputs.dryRun == false }}"
+  DRYRUN: "${{ inputs.dryRun }}"
   DOCKERFILE: "${{ inputs.dockerfile || './Dockerfile' }}"
   BUILD_CONTEXT: "${{ inputs.context || '.' }}"
   BUILD_PLATFORMS: "${{ inputs.context || 'linux/amd64' }}"
