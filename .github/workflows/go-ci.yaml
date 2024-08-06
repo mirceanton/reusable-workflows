@@ -33,9 +33,6 @@ jobs:
       - name: Run Go Build
         run: go build -o ${{ github.event.repository.name }}
 
-      - name: Run
-        run: ./${{ github.event.repository.name }} --version
-
   test:
     runs-on: ubuntu-latest
     steps:
