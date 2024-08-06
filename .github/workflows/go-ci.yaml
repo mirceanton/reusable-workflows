@@ -3,7 +3,13 @@
 name: Golang CI
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      platforms:
+        type: string
+        description: The OS arches for which to build the docker image.
+        default: linux/amd64
+        required: false
 
 jobs:
   build:
@@ -28,7 +34,7 @@ jobs:
         run: go build -o ${{ github.event.repository.name }}
 
       - name: Run
-        run: ./${{ github.event.repository.name }}
+        run: ./${{ github.event.repository.name }} --version
 
   test:
     runs-on: ubuntu-latest
