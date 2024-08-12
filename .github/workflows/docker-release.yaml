@@ -4,6 +4,11 @@ name: Docker Release
 on:
   workflow_call:
     inputs:
+      image-name:
+        type: string
+        description: The name of the image to build.
+        default: ""
+        required: false
       platforms:
         type: string
         description: The OS arches for which to build the docker image.
@@ -28,6 +33,7 @@ on:
         required: false
 
 env:
+  IMAGE_NAME: "${{ inputs.image-name || 'ghcr.io/${{ github.repository }}' }}"
   DOCKERFILE: "${{ inputs.dockerfile || './Dockerfile' }}"
   BUILD_CONTEXT: "${{ inputs.context || '.' }}"
   BUILD_PLATFORMS: "${{ inputs.platforms || 'linux/amd64' }}"
@@ -67,7 +73,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 # v5.5.1
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: "${{ env.IMAGE_NAME }}"
           tags: |
             type=ref,event=tag
             type=ref,event=pr
