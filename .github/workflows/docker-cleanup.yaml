@@ -1,0 +1,25 @@
+---
+name: Cleanup PR Images.
+
+on:
+  workflow_call: {}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - uses: dataaxiom/ghcr-cleanup-action@v1.0.7
+        with:
+          owner: mirceanton
+          repository: ${{ github.repository }}
+          package: ${{ github.repository }}
+          tags: pr-${{ github.event.number }}
+          token: "${{ steps.app-token.outputs.token }}"
