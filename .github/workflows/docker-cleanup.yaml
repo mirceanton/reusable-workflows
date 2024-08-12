@@ -34,5 +34,5 @@ jobs:
           dry-run: ${{ inputs.dryRun }}
           prune-tags-regexes: |
             ${{ inputs.tag }}
-          prune-untagged: true
+          prune-untagged: false
           keep-last: 0
