@@ -77,6 +77,7 @@ jobs:
           tags: |
             type=ref,event=tag
             type=ref,event=pr
+            type=sha,prefix=sha-,format=short
             ${{ inputs.custom-tag }}
 
       - name: Build and Push
