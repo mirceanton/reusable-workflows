@@ -1,5 +1,5 @@
 ---
-name: Docker Cleanup
+name: Docker Cleanup PR Images
 
 on:
   workflow_call:
@@ -9,11 +9,6 @@ on:
         description: The name of the image to clean up.
         default: ""
         required: true
-      image-tag-regex:
-        type: string
-        description: The regex to match image tags.
-        default: ""
-        required: false
       delete-untagged:
         type: boolean
         description: Delete untagged images.
@@ -38,24 +33,23 @@ jobs:
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
       - name: Delete Tagged Images
-        if: ${{ inputs.image-tag-regex != '' }}
         uses: stumpylog/image-cleaner-action/ephemeral@v0.8.0
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          repo_name: "${{ github.repository }}"
-          package_name: "${{ inputs.image-name }}"
-          match_regex: "${{ inputs.image-tag-regex }}"
-          scheme: "pull_request"
-          do_delete: "${{ inputs.dry-run == false }}"
           owner: "${{ github.repository_owner }}"
           is_org: "true"
+          repo_name: "${{ github.repository }}"
+          package_name: "${{ inputs.image-name }}"
+          match_regex: '^pr-(\d+)$|^(\d+)$'
+          scheme: "pull_request"
+          do_delete: "${{ inputs.dry-run == false }}"
 
       - name: Delete Untagged Images
         if: ${{ inputs.delete-untagged == true }}
         uses: stumpylog/image-cleaner-action/untagged@v0.8.0
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          package_name: "${{ inputs.image-name }}"
-          do_delete: "${{ inputs.dry-run == false }}"
           owner: "${{ github.repository_owner }}"
           is_org: "true"
+          package_name: "${{ inputs.image-name }}"
+          do_delete: "${{ inputs.dry-run == false }}"
