@@ -1,23 +1,34 @@
 ---
-name: Cleanup PR Images
+name: Docker Cleanup
 
 on:
   workflow_call:
     inputs:
-      tag:
+      image-name:
         type: string
-        description: "Tag to delete"
-        required: true
+        description: The name of the image to clean up.
         default: ""
-      dryRun:
-        type: boolean
-        description: Dry Run
-        default: false
         required: true
+      image-tag-regex:
+        type: string
+        description: The regex to match image tags.
+        default: ""
+        required: false
+      delete-untagged:
+        type: boolean
+        description: Delete untagged images.
+        default: false
+        required: false
+      dry-run:
+        type: boolean
+        description: Do not delete images.
+        default: false
+        required: false
 
 jobs:
-  purge-image:
+  docker-cleanup:
     runs-on: ubuntu-latest
+
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
@@ -26,13 +37,25 @@ jobs:
           app-id: "${{ secrets.BOT_APP_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
-      - uses: vlaurin/action-ghcr-prune@v0.6.0
+      - name: Delete Tagged Images
+        if: ${{ inputs.image-tag-regex != '' }}
+        uses: stumpylog/image-cleaner-action/ephemeral@v0.8.0
         with:
-          organization: ${{ github.repository_owner }}
-          token: ${{ steps.app-token.outputs.token }}
-          container: ${{ github.event.repository.name }}
-          dry-run: ${{ inputs.dryRun }}
-          prune-tags-regexes: |
-            ${{ inputs.tag }}
-          prune-untagged: false
-          keep-last: 0
+          token: "${{ steps.app-token.outputs.token }}"
+          repo_name: "${{ github.repository }}"
+          package_name: "${{ inputs.image-name }}"
+          match_regex: "${{ inputs.image-tag-regex }}"
+          scheme: "pull_request"
+          do_delete: "${{ inputs.dry-run == false }}"
+          owner: "${{ github.repository_owner }}"
+          is_org: "true"
+
+      - name: Delete Untagged Images
+        if: ${{ inputs.delete-untagged == true }}
+        uses: stumpylog/image-cleaner-action/untagged@v0.8.0
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          package_name: "${{ inputs.image-name }}"
+          do_delete: "${{ inputs.dry-run == false }}"
+          owner: "${{ github.repository_owner }}"
+          is_org: "true"
