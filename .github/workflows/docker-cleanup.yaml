@@ -27,7 +27,7 @@ jobs:
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
       - name: Delete PR Images
-        uses: stumpylog/image-cleaner-action/ephemeral@v0.8.0
+        uses: stumpylog/image-cleaner-action/ephemeral@0924047a3709a8f39313ec9e5f5888597e3bf81b # v0.8.0
         with:
           token: "${{ steps.app-token.outputs.token }}"
           owner: "${{ github.repository_owner }}"
@@ -40,7 +40,7 @@ jobs:
 
       - name: Delete Untagged Images
         if: "${{ env.TOKEN != '' }}"
-        uses: stumpylog/image-cleaner-action/untagged@v0.8.0
+        uses: stumpylog/image-cleaner-action/untagged@0924047a3709a8f39313ec9e5f5888597e3bf81b # v0.8.0
         with:
           token: "${{ steps.app-token.outputs.token }}"
           owner: "${{ github.repository_owner }}"
