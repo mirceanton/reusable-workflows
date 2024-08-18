@@ -1,23 +1,23 @@
 ---
-name: Cleanup PR Images
+name: Docker Cleanup
 
 on:
   workflow_call:
     inputs:
-      tag:
+      image-name:
         type: string
-        description: "Tag to delete"
-        required: true
+        description: The name of the image to cleanup.
         default: ""
-      dryRun:
-        type: boolean
-        description: Dry Run
-        default: false
         required: true
 
+concurrency:
+  group: registry-tags-cleanup
+  cancel-in-progress: false
+
 jobs:
-  purge-image:
+  delete-tagged-images:
     runs-on: ubuntu-latest
+
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
@@ -26,13 +26,24 @@ jobs:
           app-id: "${{ secrets.BOT_APP_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
-      - uses: vlaurin/action-ghcr-prune@v0.6.0
+      - name: Delete PR Images
+        uses: stumpylog/image-cleaner-action/ephemeral@v0.8.0
         with:
-          organization: ${{ github.repository_owner }}
-          token: ${{ steps.app-token.outputs.token }}
-          container: ${{ github.event.repository.name }}
-          dry-run: ${{ inputs.dryRun }}
-          prune-tags-regexes: |
-            ${{ inputs.tag }}
-          prune-untagged: false
-          keep-last: 0
+          token: "${{ steps.app-token.outputs.token }}"
+          owner: "${{ github.repository_owner }}"
+          is_org: "true"
+          do_delete: "true"
+          package_name: "${{ github.event.inputs.image-name }}"
+          scheme: "pull_request"
+          repo_name: "${{ github.repository }}"
+          match_regex: '^pr-(\d+)$|^(\d+)$'
+
+      - name: Delete Untagged Images
+        if: "${{ env.TOKEN != '' }}"
+        uses: stumpylog/image-cleaner-action/untagged@v0.8.0
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          owner: "${{ github.repository_owner }}"
+          is_org: "true"
+          do_delete: "true"
+          package_name: "${{ github.event.inputs.image-name }}"
