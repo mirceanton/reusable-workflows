@@ -3,42 +3,43 @@
 name: Renovate
 
 on:
-  workflow_dispatch:  # Manual Trigger
+  # from other repositories
+  workflow_call:
     inputs:
-      dryRun:
-        description: Dry Run
-        default: "false"
-        required: false
-      logLevel:
-        description: Log Level
-        default: debug
-        required: false
-
-  workflow_call:  # Call from other repositories
-    inputs:
-      dryRun:
+      dry-run:
         type: boolean
         description: Dry Run
         default: false
         required: false
-      logLevel:
+      log-level:
         type: string
         description: Log Level
         default: debug
         required: false
 
+  # from this repository
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Dry Run
+        default: "false"
+        required: false
+      log-level:
+        description: Log Level
+        default: debug
+        required: false
   schedule:
-    - cron: "0 * * * *"  # hourly
+    - cron: "0 * * * *" # hourly
 
 env:
-  LOG_LEVEL: "${{ inputs.logLevel || 'debug' }}"
+  LOG_LEVEL: "${{ inputs.log-level || 'debug' }}"
   RENOVATE_AUTODISCOVER: true
   RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
-  RENOVATE_DRY_RUN: "${{ inputs.dryRun == true }}"
+  RENOVATE_DRY_RUN: "${{ inputs.dry-run == true }}"
   RENOVATE_PLATFORM: github
   RENOVATE_PLATFORM_COMMIT: true
   RENOVATE_VERSION: 37.367.0
-  RENOVATE_GIT_AUTHOR: 'mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>'
+  RENOVATE_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
 
 jobs:
   renovate:

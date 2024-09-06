@@ -1,43 +1,43 @@
 ---
-name: Docker Release
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Docker: Build and Push"
 
 on:
   workflow_call:
     inputs:
-      image-name:
+      image:
         type: string
         description: The name of the image to build.
         default: ""
-        required: false
+        required: true
       platforms:
         type: string
         description: The OS arches for which to build the docker image.
         default: linux/amd64
         required: false
-      custom-tag:
+      tags:
         type: string
-        description: Additional custom tags for the image.
-        required: false
+        description: Tags for the image.
+        required: true
       context:
         type: string
         description: The context for the docker build command.
         required: false
+        default: "."
       dockerfile:
         type: string
         description: The path to the dockerfile to build.
-        required: false
+        required: true
       build-args:
         type: string
         description: Additional build args to pass to the build command.
         default: ""
         required: false
-
-env:
-  IMAGE_NAME: "${{ inputs.image-name || 'ghcr.io/${{ github.repository }}' }}"
-  DOCKERFILE: "${{ inputs.dockerfile || './Dockerfile' }}"
-  BUILD_CONTEXT: "${{ inputs.context || '.' }}"
-  BUILD_PLATFORMS: "${{ inputs.platforms || 'linux/amd64' }}"
-  BUILD_ARGS: "${{ inputs.build-args || '' }}"
+      dry-run:
+        type: boolean
+        description: Whether or not to push the image.
+        default: false
+        required: false
 
 jobs:
   build-image:
@@ -62,32 +62,29 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
 
-      - name: Login to GitHub Container Registry
+      - name: Login to Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_RW_TOKEN }}
+          registry: "ghcr.io"
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GHCR_RW_TOKEN }}"
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 # v5.5.1
         with:
-          images: "${{ env.IMAGE_NAME }}"
-          tags: |
-            type=ref,event=tag
-            type=ref,event=pr
-            ${{ inputs.custom-tag }}
+          images: "${{ inputs.image }}"
+          tags: "${{ inputs.tags }}"
 
       - name: Build and Push
         uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85 # v6.7.0
         with:
-          context: "${{ env.BUILD_CONTEXT }}"
-          file: "${{ env.DOCKERFILE }}"
-          platforms: "${{ env.BUILD_PLATFORMS }}"
-          push: true
+          context: "${{ inputs.context }}"
+          file: "${{ inputs.dockerfile }}"
+          platforms: "${{ inputs.platforms }}"
+          push: "${{ !inputs.dry-run }}"
           tags: "${{ steps.meta.outputs.tags }}"
           labels: "${{ steps.meta.outputs.labels }}"
-          build-args: "${{ env.BUILD_ARGS }}"
-          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
+          build-args: "${{ inputs.build-args }}"
+          cache-to: type=registry,ref=${{ inputs.image }}:buildcache
+          cache-from: type=registry,ref=${{ inputs.image }}:buildcache,mode=max

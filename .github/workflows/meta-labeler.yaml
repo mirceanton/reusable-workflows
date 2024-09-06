@@ -1,15 +1,9 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Labeler
+name: "Meta: Labeler"
 
 on:
-  workflow_dispatch:
-    inputs:
-      config-file:
-        type: string
-        description: Path to the labeler config file.
-        default: .github/configs/labeler.yaml
-
+  # from other repositories
   workflow_call:
     inputs:
       config-file:
@@ -17,9 +11,9 @@ on:
         description: Path to the labeler config file.
         default: .github/configs/labeler.yaml
 
+  # from this repository
   pull_request_target:
-    branches: [ "main" ]
-
+    branches: ["main"]
 
 env:
   LABELER_CONFIG_FILE: "${{ inputs.config-file || '.github/configs/labeler.yaml' }}"
