@@ -1,9 +1,28 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Git Release SemVer
+name: "Git: Release SemVer"
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      dry-run:
+        type: boolean
+        description: Dry Run
+        default: false
+        required: false
+      branch:
+        type: string
+        description: The branch to release from.
+        default: main
+        required: false
+      plugins:
+        type: string
+        description: The plugins to use with semantic-release.
+        default: |
+          @semantic-release/commit-analyzer
+          @semantic-release/release-notes-generator
+          @semantic-release/github
+        required: false
 
 jobs:
   release:
@@ -21,20 +40,11 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
-      - name: Set up Node.js
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
-        with:
-          node-version: '22'
-
-      - name: Install dependencies
-        run: npm install semantic-release @semantic-release/github
-
       - name: Run semantic-release
-        run: |
-          npx semantic-release \
-            --branches=main \
-            --plugins=@semantic-release/commit-analyzer \
-            --plugins=@semantic-release/release-notes-generator \
-            --plugins=@semantic-release/github
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          dry_run: "${{ inputs.dry-run }}"
+          branch: "${{ inputs.branch }}"
+          extra_plugins: "${{ inputs.plugins }}"
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"

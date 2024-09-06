@@ -1,31 +1,44 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Label Sync
+name: "Meta: Label Sync"
 
 on:
-  workflow_dispatch:
-    inputs:
-      config-file:
-        type: string
-        description: Path to the labeler config file.
-        default: .github/configs/labels.yaml
-
+  # from other repositories
   workflow_call:
     inputs:
+      dry-run:
+        type: boolean
+        description: Dry Run
+        default: false
+        required: false
       config-file:
         type: string
         description: Path to the labeler config file.
         default: .github/configs/labels.yaml
 
+  # from this repository
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        type: boolean
+        description: Dry Run
+        default: false
+        required: false
+      config-file:
+        type: string
+        description: Path to the labeler config file.
+        default: .github/configs/labels.yaml
   push:
-    branches: [ "main" ]
-    paths: [ ".github/configs/labels.yaml" ]
-
+    branches: ["main"]
+    paths: [".github/configs/labels.yaml"]
+  pull_request:
+    paths: [".github/configs/labels.yaml"]
   schedule:
     - cron: "0 0 * * *" # Every day at midnight
 
 env:
   LABEL_SYNC_CONFIG_FILE: "${{ inputs.config-file || '.github/configs/labels.yaml' }}"
+  DRY_RUN: "${{ inputs.dry-run == true || github.event_name == 'pull_request' }}"
 
 jobs:
   label-sync:
@@ -43,7 +56,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          sparse-checkout: .github/configs/labels.yaml
+          sparse-checkout: "${{ env.LABEL_SYNC_CONFIG_FILE }}"
 
       - name: Sync Labels
         uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a # v2.3.3
@@ -51,3 +64,4 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
           config-file: "${{ env.LABEL_SYNC_CONFIG_FILE }}"
           delete-other-labels: true
+          dry-run: "${{ env.DRY_RUN }}"

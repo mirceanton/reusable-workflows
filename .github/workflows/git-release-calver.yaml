@@ -1,9 +1,15 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: CalVer Git Release
+name: "Git: Release Calver"
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      dry-run:
+        type: boolean
+        description: Dry Run
+        default: false
+        required: false
 
 jobs:
   release:
@@ -26,6 +32,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+          DRY_RUN: "${{ inputs.dry-run == true }}"
         run: |
           # Retrieve previous release tag
           previous_tag="$(gh release list --limit 1 | awk '{ print $1 }')"
@@ -48,7 +55,11 @@ jobs:
           release_tag="${next_major_minor}.${next_patch}"
 
           # Create release
-          gh release create "${release_tag}" \
-              --repo="${GITHUB_REPOSITORY}" \
-              --title="${release_tag}" \
-              --generate-notes
+          if [[ "${DRY_RUN}" == "true" ]]; then
+              echo "Dry run: gh release create ${release_tag} --repo=${GITHUB_REPOSITORY} --title=${release_tag} --generate-notes"
+          else
+              gh release create "${release_tag}" \
+                  --repo="${GITHUB_REPOSITORY}" \
+                  --title="${release_tag}" \
+                  --generate-notes
+          fi
