@@ -11,6 +11,11 @@ on:
         default: false
         required: false
 
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/*.yaml"
+
 jobs:
   release:
     runs-on: ubuntu-latest
