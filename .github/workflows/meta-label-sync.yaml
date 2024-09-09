@@ -14,7 +14,7 @@ on:
       config-file:
         type: string
         description: Path to the labeler config file.
-        default: .github/configs/labels.yaml
+        default: ""
 
   # from this repository
   workflow_dispatch:
@@ -27,18 +27,14 @@ on:
       config-file:
         type: string
         description: Path to the labeler config file.
-        default: .github/configs/labels.yaml
+        default: ""
   push:
     branches: ["main"]
-    paths: [".github/configs/labels.yaml"]
+    paths: ["labels/base.yaml"]
   pull_request:
-    paths: [".github/configs/labels.yaml"]
+    paths: ["labels/base.yaml"]
   schedule:
     - cron: "0 0 * * *" # Every day at midnight
-
-env:
-  LABEL_SYNC_CONFIG_FILE: "${{ inputs.config-file || '.github/configs/labels.yaml' }}"
-  DRY_RUN: "${{ inputs.dry-run == true || github.event_name == 'pull_request' }}"
 
 jobs:
   label-sync:
@@ -61,7 +57,9 @@ jobs:
       - name: Sync Labels
         uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a # v2.3.3
         with:
+          dry-run: "${{ inputs.dry-run == true || github.event_name == 'pull_request' }}"
           token: "${{ steps.app-token.outputs.token }}"
-          config-file: "${{ env.LABEL_SYNC_CONFIG_FILE }}"
           delete-other-labels: true
-          dry-run: "${{ env.DRY_RUN }}"
+          config-file: |
+            https://raw.githubusercontent.com/mirceanton/reusable-workflows/main/labels/base.yaml
+            "${{ inputs.config-file }}"
