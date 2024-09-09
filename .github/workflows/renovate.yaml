@@ -6,6 +6,10 @@ on:
   # from other repositories
   workflow_call:
     inputs:
+      config-file:
+        description: Path to the renovate config file
+        required: true
+        type: string
       dry-run:
         type: boolean
         description: Dry Run
@@ -20,14 +24,20 @@ on:
   # from this repository
   workflow_dispatch:
     inputs:
+      config-file:
+        description: Path to the renovate config file
+        required: true
+        type: string
       dry-run:
         description: Dry Run
-        default: "false"
+        default: false
         required: false
+        type: boolean
       log-level:
         description: Log Level
         default: debug
         required: false
+        type: string
   schedule:
     - cron: "0 * * * *" # hourly
 
@@ -40,6 +50,7 @@ env:
   RENOVATE_PLATFORM_COMMIT: true
   RENOVATE_VERSION: 37.367.0
   RENOVATE_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+  RENOVATE_CONFIG: "${{ inputs.config-gile || 'renovate.json5' }}"
 
 jobs:
   renovate:
@@ -61,5 +72,5 @@ jobs:
         uses: renovatebot/github-action@dd4d265eb8646cd04fc5f86ff8bc8d496d75a251 # v40.2.8
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          configurationFile: .github/renovate.json5
+          configurationFile: "${{ env.RENOVATE_CONFIG }}"
           renovate-version: "${{ env.WORKFLOW_RENOVATE_VERSION }}"
