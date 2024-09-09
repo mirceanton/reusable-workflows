@@ -11,7 +11,7 @@
 			"matchUpdateTypes": [
 				"major"
 			],
-			"commitMessagePrefix": "deps(container)!: ",
+			"commitMessagePrefix": "patch(container)!: ",
 			"commitMessageTopic": "{{depName}}",
 			"commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )"
 		},
@@ -23,7 +23,7 @@
 				"minor",
 				"patch"
 			],
-			"semanticCommitType": "deps",
+			"semanticCommitType": "patch",
 			"semanticCommitScope": "container",
 			"commitMessageTopic": "{{depName}}",
 			"commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
@@ -38,7 +38,7 @@
 			"matchUpdateTypes": [
 				"major"
 			],
-			"commitMessagePrefix": "deps(go)!: ",
+			"commitMessagePrefix": "patch(go)!: ",
 			"commitMessageTopic": "{{depName}}",
 			"commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
 		},
@@ -50,7 +50,7 @@
 				"minor",
 				"patch"
 			],
-			"commitMessagePrefix": "deps(go): ",
+			"commitMessagePrefix": "patch(go): ",
 			"commitMessageTopic": "{{depName}}",
 			"commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
 		},
@@ -64,7 +64,7 @@
 			"matchUpdateTypes": [
 				"major"
 			],
-			"commitMessagePrefix": "deps(github-actions)!: ",
+			"commitMessagePrefix": "patch(github-actions)!: ",
 			"commitMessageTopic": "{{depName}}",
 			"commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
 		},
@@ -76,7 +76,7 @@
 				"minor",
 				"patch"
 			],
-			"semanticCommitType": "deps",
+			"semanticCommitType": "patch",
 			"semanticCommitScope": "github-actions",
 			"commitMessageTopic": "{{depName}}",
 			"commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
