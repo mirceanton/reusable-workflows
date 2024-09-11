@@ -1,0 +1,54 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - GolangCI Lint
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        description: The Python version to use.
+        required: false
+        default: "3.12"
+      yamllint-version:
+        type: string
+        description: The version of yamllint to use.
+        required: false
+        default: "1.35.1"
+      yamllint-args:
+        type: string
+        description: Additional arguments to pass to yamllint.
+        required: false
+        default: ""
+      working-directory:
+        type: string
+        description: The directory to lint.
+        required: false
+        default: "."
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
+        with:
+          python-version: "${{ inputs.python-version }}"
+
+      - name: Install yamllint
+        run: pip install yamllint==${{ inputs.yamllint-version }}
+
+      - name: Run yamllint
+        run: yamllint ${{ inputs.yamllint-args }} ${{ inputs.working-directory }}
