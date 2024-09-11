@@ -1,10 +1,7 @@
 {
 	"name": "Reusable-Workflows",
-	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
-	"features": {
-		"ghcr.io/devcontainers-contrib/features/act:1": {},
-		"ghcr.io/devcontainers-contrib/features/actionlint:1": {},
-		"ghcr.io/devcontainers-contrib/features/yamllint:2": {}
+	"build": {
+		"dockerfile": "Dockerfile"
 	},
 	"remoteUser": "vscode",
 	"containerUser": "vscode",
