@@ -38,12 +38,12 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
 
       - name: Check for schema comments
+        shell: bash
         env:
-          DEBUG: ${{ inputs.debug }}
-          YAML_SCHEMA_IGNORE: ${{ inputs.ignore }}
-          DIRECTORY: ${{ inputs.working-directory }}
+          DEBUG: "${{ inputs.debug }}"
+          YAML_SCHEMA_IGNORE: "${{ inputs.ignore }}"
+          DIRECTORY: "${{ inputs.working-directory }}"
         run: |
-          #!/bin/bash
           # The schema comment to look for
           SCHEMA_COMMENT="# yaml-language-server: \$schema="
 
@@ -53,7 +53,7 @@ jobs:
           NC='\033[0m' # No Color
 
           # Split YAML_SCHEMA_IGNORE by comma if it exists
-          IFS='\n' read -r -a IGNORE_FILES <<<"$YAML_SCHEMA_IGNORE"
+          IFS=$'\n' read -r -a IGNORE_FILES <<<"$YAML_SCHEMA_IGNORE"
 
           # Check if the directory exists
           if [ ! -d "$DIRECTORY" ]; then
