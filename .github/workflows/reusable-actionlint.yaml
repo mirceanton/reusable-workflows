@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - ActionLint
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        description: "Go version"
+        required: false
+        type: string
+        default: "stable"
+      actionlint-version:
+        description: "ActionLint version"
+        required: false
+        type: string
+        default: "latest"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Set up Go
+        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+        with:
+          go-version: "${{ inputs.go-version }}"
+
+      - name: Install actionlint
+        run: go install github.com/rhysd/actionlint/cmd/actionlint@${{ inputs.actionlint-version }}
+
+      - name: Run actionlint
+        run: actionlint
