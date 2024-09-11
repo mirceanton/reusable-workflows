@@ -10,6 +10,11 @@ on:
         required: false
         type: string
         default: "latest"
+      commitlint-version:
+        description: "Commitlint version"
+        required: false
+        type: string
+        default: "latest"
 
 jobs:
   commitlint:
