@@ -14,7 +14,7 @@ on:
         type: string
         description: The version of golangci-lint to use.
         required: false
-        default: "v1.60" #TODO add renovate annotation
+        default: "v1.60" # TODO add renovate annotation
       golangci-args:
         type: string
         description: Additional arguments to pass to golangci
