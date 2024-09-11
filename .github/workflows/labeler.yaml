@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Labeler
+
+on:
+  # When a pull request is opened, reopened, or synchronized
+  pull_request_target: {}
+
+jobs:
+  pr-labeler:
+    uses: ./.github/workflows/reusable-labeler.yaml
+    secrets: inherit
+    with:
+      config-file: .github/labeler/base.yaml

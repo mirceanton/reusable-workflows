@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Golang: Release"
+name: Reusable - Goreleaser
 
 on:
   workflow_call:
@@ -8,7 +8,8 @@ on:
       go-version:
         type: string
         description: The Go version to use.
-        required: true
+        required: false
+        default: "stable"
       goreleaser-version:
         type: string
         description: The GoReleaser version to use.
