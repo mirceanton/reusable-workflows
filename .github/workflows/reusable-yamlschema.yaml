@@ -72,6 +72,7 @@ jobs:
               return 1
           }
 
+          status=0
           # Find all YAML files in the directory
           find "$DIRECTORY" -type f \( -name "*.yaml" -o -name "*.yml" \) | while read -r file; do
               # Skip ignored files
@@ -88,5 +89,7 @@ jobs:
               else
                   # Print in red if the schema is missing
                   echo -e "${RED}$file: Schema comment missing!${NC}"
+                  status=1
               fi
           done
+          exit $status
