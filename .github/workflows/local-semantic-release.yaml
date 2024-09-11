@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Semantic Release
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/reusable-**"
+      - ".configs/**"
+jobs:
+  release:
+    uses: mirceanton/reusable-workflows/.github/workflows/git-release-semver.yaml@main
+    secrets: inherit
