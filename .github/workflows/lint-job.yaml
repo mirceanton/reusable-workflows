@@ -25,3 +25,9 @@ jobs:
   shellcheck:
     uses: ./.github/workflows/reusable-shellcheck.yaml
     secrets: inherit
+
+  markdownlint:
+    uses: ./.github/workflows/reusable-markdownlint.yaml
+    secrets: inherit
+    with:
+      markdownlint-cli-version: "0.41.0"

@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - Markdown Lint
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version"
+        type: string
+        required: false
+        default: "latest"
+      markdownlint-cli-version:
+        description: "markdownlint-cli version"
+        type: string
+        required: false
+        default: "latest"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Install Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: "${{ inputs.node-version }}"
+
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli@${{ inputs.markdownlint-cli-version }}
+
+      - name: Run markdownlint
+        run: find . -name "*.md" -exec markdownlint {} +
