@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Semantic Release
+name: Git Release SemVer
 
 on:
   workflow_dispatch: {}
@@ -8,7 +8,14 @@ on:
     branches: ["main"]
     paths:
       - ".github/workflows/reusable-**"
-      - ".configs/**"
+      - ".renovate/*.json5"
+      - ".releaserc.yaml"
+
+  pull_request:
+    paths:
+      - ".github/workflows/git-release-semver.yaml"
+      - ".github/workflows/reusable-**"
+
 jobs:
   release:
     uses: ./.github/workflows/reusable-release-semver.yaml

@@ -15,15 +15,15 @@ on:
   # Dry run on pull requests
   pull_request:
     paths:
-      - .github/workflows/local-label-sync.yaml
-      - .configs/labels/base.yaml
+      - .github/workflows/label-sync.yaml
+      - .github/labels/base.yaml
 
   # Run when the configs changed on the main branch
   push:
     branches: ["main"]
     paths:
-      - .github/workflows/local-label-sync.yaml
-      - .configs/labels/base.yaml
+      - .github/workflows/label-sync.yaml
+      - .github/labels/base.yaml
 
   # Scheduled daily
   schedule:
@@ -35,4 +35,4 @@ jobs:
     secrets: inherit
     with:
       dry-run: ${{ inputs.dry-run || github.event_name == 'pull_request' }}
-      config-file: .configs/labels/base.yaml
+      config-file: .github/labels/base.yaml

@@ -11,4 +11,4 @@ jobs:
     uses: ./.github/workflows/reusable-labeler.yaml
     secrets: inherit
     with:
-      config-file: .configs/labeler/base.yaml
+      config-file: .github/labeler/base.yaml
