@@ -21,3 +21,7 @@ jobs:
     secrets: inherit
     with:
       actionlint-version: "v1.7.1"
+
+  shellcheck:
+    uses: ./.github/workflows/reusable-shellcheck.yaml
+    secrets: inherit
