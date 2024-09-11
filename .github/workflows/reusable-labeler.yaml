@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Meta: Labeler"
+name: Reusable - Labeler
 
 on:
   # from other repositories
@@ -10,10 +10,6 @@ on:
         type: string
         description: Path to the labeler config file.
         default: ""
-
-  # from this repository
-  pull_request_target:
-    branches: ["main"]
 
 jobs:
   size-label:
@@ -51,6 +47,4 @@ jobs:
         with:
           sync-labels: true
           repo-token: "${{ steps.app-token.outputs.token }}"
-          configuration-path: |
-            https://raw.githubusercontent.com/mirceanton/reusable-workflows/main/labeler/base.yaml
-            "${{ inputs.config-file }}"
+          configuration-path: "${{ inputs.config-file }}"

@@ -1,17 +1,18 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Golang: Test"
+name: Reusable - Release SemVer
 
 on:
   workflow_call:
     inputs:
-      go-version:
-        type: string
-        description: The Go version to use.
-        required: true
+      dry-run:
+        type: boolean
+        description: Dry Run
+        default: false
+        required: false
 
 jobs:
-  test:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Generate Token
@@ -26,10 +27,9 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
-      - name: Set up Go
-        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+      - name: Run semantic-release
+        uses: cycjimmy/semantic-release-action@v4
         with:
-          go-version: "${{ inputs.go-version }}"
-
-      - name: Run Tests
-        run: go test -v ./... -race -covermode=atomic
+          dry_run: "${{ inputs.dry-run }}"
+        env:
+          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"

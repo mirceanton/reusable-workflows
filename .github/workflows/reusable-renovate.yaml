@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - Renovate
+
+on:
+  # from other repositories
+  workflow_call:
+    inputs:
+      config-file:
+        description: Path to the renovate config file
+        required: true
+        type: string
+      dry-run:
+        type: boolean
+        description: Dry Run
+        default: false
+        required: false
+      log-level:
+        type: string
+        description: Log Level
+        default: debug
+        required: false
+
+env:
+  LOG_LEVEL: "${{ inputs.log-level || 'debug' }}"
+  RENOVATE_AUTODISCOVER: true
+  RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
+  RENOVATE_DRY_RUN: "${{ inputs.dry-run == true }}"
+  RENOVATE_PLATFORM: github
+  RENOVATE_PLATFORM_COMMIT: true
+  RENOVATE_VERSION: 37.367.0
+  RENOVATE_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+  RENOVATE_CONFIG: "${{ inputs.config-file }}"
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Renovate
+        uses: renovatebot/github-action@dd4d265eb8646cd04fc5f86ff8bc8d496d75a251 # v40.2.8
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          configurationFile: "${{ env.RENOVATE_CONFIG }}"
+          renovate-version: "${{ env.WORKFLOW_RENOVATE_VERSION }}"

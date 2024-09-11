@@ -1,40 +1,31 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Git: Release SemVer"
+name: Git Release SemVer
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       dry-run:
-        type: boolean
-        description: Dry Run
-        default: false
+        description: "Dry Run"
+        default: true
         required: false
+        type: boolean
 
   push:
     branches: ["main"]
     paths:
-      - ".github/workflows/*.yaml"
+      - ".github/workflows/reusable-**"
+      - ".renovate/*.json5"
+      - ".releaserc.yaml"
+
+  pull_request:
+    paths:
+      - ".github/workflows/git-release-semver.yaml"
+      - ".github/workflows/reusable-**"
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate Token
-        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
-        id: app-token
-        with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
-
-      - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-        with:
-          token: "${{ steps.app-token.outputs.token }}"
-
-      - name: Run semantic-release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          dry_run: "${{ inputs.dry-run }}"
-        env:
-          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+    uses: ./.github/workflows/reusable-release-semver.yaml
+    secrets: inherit
+    with:
+      dry-run: ${{ inputs.dry-run || github.event_name == 'pull_request' }}

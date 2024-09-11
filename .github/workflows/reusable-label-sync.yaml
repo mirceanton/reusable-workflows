@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Meta: Label Sync"
+name: Reusable - Label Sync
 
 on:
   # from other repositories
@@ -16,30 +16,9 @@ on:
         description: Path to the labeler config file.
         default: ""
 
-  # from this repository
-  workflow_dispatch:
-    inputs:
-      dry-run:
-        type: boolean
-        description: Dry Run
-        default: false
-        required: false
-      config-file:
-        type: string
-        description: Path to the labeler config file.
-        default: ""
-  push:
-    branches: ["main"]
-    paths: ["labels/base.yaml"]
-  pull_request:
-    paths: ["labels/base.yaml"]
-  schedule:
-    - cron: "0 0 * * *" # Every day at midnight
-
 jobs:
   label-sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
@@ -57,9 +36,7 @@ jobs:
       - name: Sync Labels
         uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a # v2.3.3
         with:
-          dry-run: "${{ inputs.dry-run == true || github.event_name == 'pull_request' }}"
+          dry-run: "${{ inputs.dry-run == true }}"
           token: "${{ steps.app-token.outputs.token }}"
           delete-other-labels: true
-          config-file: |
-            https://raw.githubusercontent.com/mirceanton/reusable-workflows/main/labels/base.yaml
-            "${{ inputs.config-file }}"
+          config-file: "${{ inputs.config-file }}"

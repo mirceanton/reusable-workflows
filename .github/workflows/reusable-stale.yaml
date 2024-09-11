@@ -1,14 +1,15 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Close Stale Issues
+name: Reusable - Stale
 
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/stale.yaml"
-
-  schedule:
-    - cron: "0 0 * * *"
+  workflow_call:
+    inputs:
+      dry-run:
+        type: boolean
+        description: Dry Run
+        default: false
+        required: false
 
 jobs:
   stale:
@@ -37,4 +38,4 @@ jobs:
           exempt-issue-labels: "issue/feature"
           remove-stale-when-updated: "True"
           operations-per-run: 500
-          debug-only: "${{ github.event_name == 'pull_request' }}"
+          debug-only: "${{ inputs.dry-run }}"
