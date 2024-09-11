@@ -4,10 +4,7 @@ name: Lint
 
 on:
   workflow_dispatch: {}
-
-  pull_request:
-    paths:
-      - "**.yaml"
+  pull_request: {}
 
 jobs:
   yamllint:
@@ -31,3 +28,9 @@ jobs:
     secrets: inherit
     with:
       markdownlint-cli-version: "0.41.0"
+
+  commitlint:
+    uses: ./.github/workflows/reusable-commitlint.yaml
+    secrets: inherit
+    with:
+      commitlint-version: "v19.5.0"
