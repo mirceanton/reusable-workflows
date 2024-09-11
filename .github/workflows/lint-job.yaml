@@ -16,6 +16,10 @@ jobs:
     with:
       yamllint-args: "--config-file=.yamllint.yaml"
 
+  yaml-schema:
+    uses: ./.github/workflows/reusable-yamlschema.yaml
+    secrets: inherit
+
   actionlint:
     uses: ./.github/workflows/reusable-actionlint.yaml
     secrets: inherit

@@ -1,0 +1,92 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - YAMLLint
+
+on:
+  workflow_call:
+    inputs:
+      debug:
+        description: Show debug logs.
+        type: boolean
+        required: false
+        default: false
+      ignore:
+        description: A newline-separated list of files to ignore.
+        type: string
+        required: false
+        default: ""
+      working-directory:
+        description: The directory to lint (recursively).
+        type: string
+        required: false
+        default: "."
+
+jobs:
+  yamlschemas:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+
+      - name: Check for schema comments
+        env:
+          DEBUG: ${{ inputs.debug }}
+          YAML_SCHEMA_IGNORE: ${{ inputs.ignore }}
+          DIRECTORY: ${{ inputs.working-directory }}
+        run: |
+          #!/bin/bash
+          # The schema comment to look for
+          SCHEMA_COMMENT="# yaml-language-server: \$schema="
+
+          # Colors for output
+          RED='\033[0;31m'
+          GRAY='\033[0;90m'
+          NC='\033[0m' # No Color
+
+          # Split YAML_SCHEMA_IGNORE by comma if it exists
+          IFS='\n' read -r -a IGNORE_FILES <<<"$YAML_SCHEMA_IGNORE"
+
+          # Check if the directory exists
+          if [ ! -d "$DIRECTORY" ]; then
+              echo "Directory $DIRECTORY does not exist."
+              exit 1
+          fi
+
+          # Function to check if a file is in the ignore list
+          function is_ignored() {
+              local file=$1
+              for ignore in "${IGNORE_FILES[@]}"; do
+                  if [[ "$file" == *"$ignore"* ]]; then
+                      return 0
+                  fi
+              done
+              return 1
+          }
+
+          # Find all YAML files in the directory
+          find "$DIRECTORY" -type f \( -name "*.yaml" -o -name "*.yml" \) | while read -r file; do
+              # Skip ignored files
+              if is_ignored "$file"; then
+                  continue
+              fi
+
+              # Check if the schema comment exists in the file
+              if grep -q "$SCHEMA_COMMENT" "$file"; then
+                  if $DEBUG; then
+                      # Print in gray if LOG_LEVEL is debug and schema is found
+                      echo -e "${GRAY}$file: Schema comment found.${NC}"
+                  fi
+              else
+                  # Print in red if the schema is missing
+                  echo -e "${RED}$file: Schema comment missing!${NC}"
+              fi
+          done
