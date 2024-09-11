@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Docker: Build and Push"
+name: Reusable - Docker Build Push
 
 on:
   workflow_call:
@@ -37,11 +37,15 @@ on:
         description: Whether or not to push the image.
         default: false
         required: false
+      setup-qemu:
+        type: boolean
+        description: Whether or not to set up QEMU.
+        default: true
+        required: false
 
 jobs:
   build-image:
     runs-on: ubuntu-latest
-
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
@@ -56,6 +60,7 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
 
       - name: Set up QEMU
+        if: ${{ inputs.setup-qemu == true }}
         uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0
 
       - name: Set up Docker Buildx

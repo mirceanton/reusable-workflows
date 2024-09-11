@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Renovate
+name: Reusable - Renovate
 
 on:
   # from other repositories
@@ -21,26 +21,6 @@ on:
         default: debug
         required: false
 
-  # from this repository
-  workflow_dispatch:
-    inputs:
-      config-file:
-        description: Path to the renovate config file
-        required: true
-        type: string
-      dry-run:
-        description: Dry Run
-        default: false
-        required: false
-        type: boolean
-      log-level:
-        description: Log Level
-        default: debug
-        required: false
-        type: string
-  schedule:
-    - cron: "0 * * * *" # hourly
-
 env:
   LOG_LEVEL: "${{ inputs.log-level || 'debug' }}"
   RENOVATE_AUTODISCOVER: true
@@ -50,11 +30,11 @@ env:
   RENOVATE_PLATFORM_COMMIT: true
   RENOVATE_VERSION: 37.367.0
   RENOVATE_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
-  RENOVATE_CONFIG: "${{ inputs.config-gile || 'renovate.json5' }}"
+  RENOVATE_CONFIG: "${{ inputs.config-file }}"
 
 jobs:
   renovate:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
