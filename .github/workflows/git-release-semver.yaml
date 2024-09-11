@@ -3,7 +3,14 @@
 name: Git Release SemVer
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Dry Run"
+        default: true
+        required: false
+        type: boolean
+
   push:
     branches: ["main"]
     paths:
@@ -20,3 +27,5 @@ jobs:
   release:
     uses: ./.github/workflows/reusable-release-semver.yaml
     secrets: inherit
+    with:
+      dry-run: ${{ inputs.dry-run || github.event_name == 'pull_request' }}
