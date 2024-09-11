@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Reusable - GolangCI Lint
+name: Reusable - YAMLLint
 
 on:
   workflow_call:
