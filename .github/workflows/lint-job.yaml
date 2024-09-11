@@ -10,7 +10,7 @@ on:
       - "*.yaml"
 
 jobs:
-  renovate:
+  yamllint:
     uses: ./.github/workflows/reusable-yamllint.yaml
     secrets: inherit
     with:
