@@ -19,6 +19,12 @@ jobs:
   yaml-schema:
     uses: ./.github/workflows/reusable-yamlschema.yaml
     secrets: inherit
+    with:
+      ignore: |
+        .github/labels/base.yaml
+        .github/labels/golang.yaml
+        .github/labeler/base.yaml
+        .github/labeler/golang.yaml
 
   actionlint:
     uses: ./.github/workflows/reusable-actionlint.yaml
