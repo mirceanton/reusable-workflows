@@ -61,6 +61,9 @@ jobs:
               exit 1
           fi
 
+          # Initialize flag to track missing schemas
+          missing_schema=0
+
           # Function to check if a file is in the ignore list
           function is_ignored() {
               local file=$1
@@ -72,9 +75,8 @@ jobs:
               return 1
           }
 
-          export STATUS=0
-          # Find all YAML files in the directory
-          find "$DIRECTORY" -type f \( -name "*.yaml" -o -name "*.yml" \) | while read -r file; do
+          # Use a for loop to avoid subshell issues
+          for file in $(find "$DIRECTORY" -type f \( -name "*.yaml" -o -name "*.yml" \)); do
               # Skip ignored files
               if is_ignored "$file"; then
                   continue
@@ -82,14 +84,18 @@ jobs:
 
               # Check if the schema comment exists in the file
               if grep -q "$SCHEMA_COMMENT" "$file"; then
-                  if $DEBUG; then
+                  if [[ $DEBUG == true ]]; then
                       # Print in gray if LOG_LEVEL is debug and schema is found
                       echo -e "${GRAY}$file: Schema comment found.${NC}"
                   fi
               else
                   # Print in red if the schema is missing
                   echo -e "${RED}$file: Schema comment missing!${NC}"
-                  export STATUS=1
+                  missing_schema=1
               fi
           done
-          exit $STATUS
+
+          # Exit with code 1 if any file was missing the schema
+          if [[ $missing_schema -eq 1 ]]; then
+              exit 1
+          fi
