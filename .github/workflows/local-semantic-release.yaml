@@ -11,5 +11,5 @@ on:
       - ".configs/**"
 jobs:
   release:
-    uses: mirceanton/reusable-workflows/.github/workflows/git-release-semver.yaml@main
+    uses: ./.github/workflows/reusable-release-semver.yaml
     secrets: inherit
