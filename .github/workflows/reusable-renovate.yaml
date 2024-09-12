@@ -28,9 +28,7 @@ env:
   RENOVATE_DRY_RUN: "${{ inputs.dry-run == true }}"
   RENOVATE_PLATFORM: github
   RENOVATE_PLATFORM_COMMIT: true
-  RENOVATE_VERSION: 37.367.0
   RENOVATE_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
-  RENOVATE_CONFIG: "${{ inputs.config-file }}"
 
 jobs:
   renovate:
@@ -52,5 +50,5 @@ jobs:
         uses: renovatebot/github-action@dd4d265eb8646cd04fc5f86ff8bc8d496d75a251 # v40.2.8
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          configurationFile: "${{ env.RENOVATE_CONFIG }}"
+          configurationFile: "${{ inputs.config-file }}"
           renovate-version: "${{ env.WORKFLOW_RENOVATE_VERSION }}"
