@@ -44,6 +44,8 @@ jobs:
 
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          echo "${{ github.event.pull_request.title }}" > file.txt
+          echo "$PR_TITLE" > file.txt
           commitlint --verbose --color -e=file.txt
