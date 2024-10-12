@@ -56,4 +56,4 @@ jobs:
           args: release --clean ${{ inputs.dry-run && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}"
+          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: maybe figure out how to make this work with the github app token...
