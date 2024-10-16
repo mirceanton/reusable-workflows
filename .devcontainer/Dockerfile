@@ -14,7 +14,7 @@ FROM koalaman/shellcheck:${SHELLCHECK_VERSION} AS shellcheck
 ## ================================================================================================
 ## Main image
 ## ================================================================================================
-FROM mcr.microsoft.com/devcontainers/base:bookworm@sha256:3d780dfd6befc1af53a72a422518a07187fa11117df8cef651550b8ee89da7fe
+FROM mcr.microsoft.com/devcontainers/base:bookworm@sha256:b3fd61ae07a1ebd211cac645c758f4018688a86e2c9b596a6c862ca89b0a668d
 ENV EDITOR=vim
 
 # Install tools
