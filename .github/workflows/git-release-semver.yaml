@@ -11,12 +11,9 @@ on:
         required: false
         type: boolean
 
-  push:
-    branches: ["main"]
-    paths:
-      - ".github/workflows/reusable-**"
-      - ".renovate/*.json5"
-      - ".releaserc.yaml"
+  # Scheduled daily
+  schedule:
+    - cron: "0 0 * * *"
 
   pull_request:
     paths:
