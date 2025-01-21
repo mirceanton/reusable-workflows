@@ -24,7 +24,7 @@ jobs:
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
       - name: Close Stale Issues
-        uses: actions/stale@28ca1036281a5e5922ead5184a1bbf96e5fc984e # v9
+        uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9
         with:
           repo-token: "${{ steps.app-token.outputs.token }}"
           days-before-stale: 60
