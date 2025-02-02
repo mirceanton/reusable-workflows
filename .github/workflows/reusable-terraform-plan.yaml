@@ -32,7 +32,7 @@ jobs:
           TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
           TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
         options: >-
-          terraform-backend-git
+          --entrypoint /usr/bin/terraform-backend-git
 
     steps:
       - name: Generate Token
