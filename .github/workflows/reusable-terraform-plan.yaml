@@ -1,0 +1,118 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - Terraform Plan
+
+on:
+  workflow_call:
+    inputs:
+      terraform-version:
+        type: string
+        description: The Terraform version to use.
+        required: false
+        default: "1.10.5"
+      working-directory:
+        type: string
+        description: The directory to lint.
+        required: false
+        default: "."
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+
+    services:
+      http-backend:
+        image: ghcr.io/plumber-cd/terraform-backend-git:v0.1.8
+        ports: [ "6061:6061" ]
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GIT_USERNAME: mr-borboto
+          TF_BACKEND_HTTP_ENCRYPTION_PROVIDER: sops
+          TF_BACKEND_HTTP_SOPS_PGP_FP: 60A6849DA8C872ED5E3803E3CAE4C9DA0D9FDDC0
+          TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+          TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
+
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@136412a57a7081aa63c935a2cc2918f76c34f514 # v1.11.2
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Configure GPG Key
+        run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+        env:
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+
+      - name: Terraform Init
+        shell: bash
+        working-directory: ${ input.workdir }
+        run: terraform init
+
+      - name: Terraform Plan
+        shell: bash
+        working-directory: ${ input.workdir }
+        id: plan
+        run: |
+          terraform plan -out=tfplan -no-color -lock=false | tee plan.md
+          {
+            echo 'PLAN<<EOF'
+            cat plan.md
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Summarize Plan
+        id: summary
+        shell: bash
+        working-directory: ${ input.workdir }
+        run: |
+          tf-summarize -md tfplan | tee summary.md
+          {
+            echo 'SUMMARY<<EOF'
+            cat summary.md
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: Terraform Plan Summary
+
+      - name: Create or Update Comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            # Terraform Plan Summary
+
+            mr-borboto ran a `terraform plan` on the code in this PR and this is the summary of those results:
+
+            ```txt
+            ${{ steps.plan.outputs.PLAN }}
+            ```
+
+            ## Click Below for the Full Plan Output
+
+            <details>
+            <summary>Full Plan Output</summary>
+
+            ```txt
+            ${{ steps.summary.outputs.SUMMARY }}
+            ```
+
+            </details>
