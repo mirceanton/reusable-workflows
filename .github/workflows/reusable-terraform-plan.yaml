@@ -16,23 +16,18 @@ on:
         required: false
         default: "."
 
+
+env:
+  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  GIT_USERNAME: mr-borboto
+  TF_BACKEND_HTTP_ENCRYPTION_PROVIDER: sops
+  TF_BACKEND_HTTP_SOPS_PGP_FP: 60A6849DA8C872ED5E3803E3CAE4C9DA0D9FDDC0
+  TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+  TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
+
 jobs:
   plan:
     runs-on: ubuntu-latest
-
-    services:
-      http-backend:
-        image: ghcr.io/plumber-cd/terraform-backend-git:v0.1.8
-        ports: [ "6061:6061" ]
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          GIT_USERNAME: mr-borboto
-          TF_BACKEND_HTTP_ENCRYPTION_PROVIDER: sops
-          TF_BACKEND_HTTP_SOPS_PGP_FP: 60A6849DA8C872ED5E3803E3CAE4C9DA0D9FDDC0
-          TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
-          TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
-        options: >-
-          --entrypoint /usr/bin/terraform-backend-git
 
     steps:
       - name: Generate Token
@@ -54,6 +49,14 @@ jobs:
         uses: hashicorp/setup-terraform@v3.1.2
         with:
           terraform_version: ${{ inputs.terraform-version }}
+
+      - name: Setup terraform-backend-git
+        uses: plumber-cd/setup-terraform-backend-git@v1
+        with:
+          version: 0.1.8
+
+      - name: Start backend
+        run: terraform-backend-git &
 
       - name: Terraform Init
         shell: bash
