@@ -55,6 +55,9 @@ jobs:
         with:
           version: 0.1.8
 
+      - name: Setup terraform-summarize
+        uses: kishaningithub/setup-tf-summarize@v2
+
       - name: Start backend
         run: terraform-backend-git &
 
