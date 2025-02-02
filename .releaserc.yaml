@@ -6,5 +6,25 @@ plugins:
   - "@semantic-release/github"
   - - "@semantic-release/release-notes-generator"
     - preset: conventionalcommits
+      includeTypes:
+        - feat
+        - fix
+        - docs
+        - chore
+        - deps
+        - style
+        - refactor
+        - test
+        - perf
   - - "@semantic-release/commit-analyzer"
     - preset: conventionalcommits
+      includeTypes:
+        - feat
+        - fix
+        - docs
+        - chore
+        - deps
+        - style
+        - refactor
+        - test
+        - perf
