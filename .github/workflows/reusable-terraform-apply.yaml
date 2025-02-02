@@ -16,14 +16,6 @@ on:
         required: false
         default: "."
 
-env:
-  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-  GIT_USERNAME: mr-borboto
-  TF_BACKEND_HTTP_ENCRYPTION_PROVIDER: sops
-  TF_BACKEND_HTTP_SOPS_PGP_FP: 60A6849DA8C872ED5E3803E3CAE4C9DA0D9FDDC0
-  TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
-  TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
-
 jobs:
   apply:
     runs-on: ubuntu-latest
@@ -55,6 +47,14 @@ jobs:
           version: 0.1.8
 
       - name: Start backend
+        env:
+          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+          GIT_USERNAME: mr-borboto
+          TF_BACKEND_HTTP_ENCRYPTION_PROVIDER: sops
+          TF_BACKEND_HTTP_SOPS_PGP_FP: 60A6849DA8C872ED5E3803E3CAE4C9DA0D9FDDC0
+          TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+          TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
+
         run: terraform-backend-git &
 
       - name: Terraform Init
