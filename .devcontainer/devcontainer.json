@@ -1,9 +1,0 @@
-{
-	"name": "Reusable-Workflows",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
-	"remoteUser": "vscode",
-	"containerUser": "vscode",
-	"updateRemoteUserUID": true
-}

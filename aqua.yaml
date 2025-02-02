@@ -1,0 +1,8 @@
+---
+registries:
+  - type: standard
+    ref: v4.305.0 # renovate: depName=aquaproj/aqua-registry
+packages:
+  - name: koalaman/shellcheck@v0.10.0
+  - name: rhysd/actionlint@v1.7.7
+  - name: nektos/act@v0.2.72
