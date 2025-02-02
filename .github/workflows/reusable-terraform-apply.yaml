@@ -1,0 +1,88 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - Terraform Apply
+
+on:
+  workflow_call:
+    inputs:
+      terraform-version:
+        type: string
+        description: The Terraform version to use.
+        required: false
+        default: "1.10.5"
+      working-directory:
+        type: string
+        description: The directory to lint.
+        required: false
+        default: "."
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@136412a57a7081aa63c935a2cc2918f76c34f514 # v1.11.2
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Configure GPG Key
+        run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+        env:
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+
+      - name: Setup terraform-backend-git
+        uses: plumber-cd/setup-terraform-backend-git@v1
+        with:
+          version: 0.1.8
+
+      - name: Start backend
+        env:
+          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+          GIT_USERNAME: mr-borboto
+          TF_BACKEND_HTTP_ENCRYPTION_PROVIDER: sops
+          TF_BACKEND_HTTP_SOPS_PGP_FP: 60A6849DA8C872ED5E3803E3CAE4C9DA0D9FDDC0
+          TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+          TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
+
+        run: terraform-backend-git &
+
+      - name: Terraform Init
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+        run: terraform init
+
+      - name: Terraform Apply
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+        id: apply
+        run: |
+          terraform apply -auto-approve -no-color | tee apply.md
+          {
+            echo 'APPLY<<EOF'
+            cat apply.md
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v3.0.0
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          body: |
+            # Terraform Apply Summary
+
+            mr-borboto ran a `terraform apply` on the code in this PR and this is the output:
+
+            ``txt
+            ${{ steps.apply.outputs.APPLY }}
+            ```
