@@ -31,6 +31,8 @@ jobs:
           TF_BACKEND_HTTP_SOPS_PGP_FP: 60A6849DA8C872ED5E3803E3CAE4C9DA0D9FDDC0
           TF_BACKEND_GIT_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
           TF_BACKEND_GIT_GIT_COMMITPREFIX: "chore: "
+        options: >-
+          terraform-backend-git
 
     steps:
       - name: Generate Token
