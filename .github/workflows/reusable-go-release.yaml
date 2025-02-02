@@ -41,6 +41,9 @@ jobs:
         with:
           go-version: "${{ inputs.go-version }}"
 
+      - name: Install goreleaser
+        run: go install github.com/goreleaser/goreleaser/@${{ inputs.goreleaser-version }}
+
       - name: Login to Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
@@ -49,11 +52,8 @@ jobs:
           password: "${{ secrets.GHCR_RW_TOKEN }}"
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
-        with:
-          distribution: goreleaser
-          version: "${{ inputs.goreleaser-version }}"
-          args: release --clean ${{ inputs.dry-run && '--snapshot' || '' }}
+        run: goreleaser release --clean ${{ inputs.dry-run && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: maybe figure out how to make this work with the github app token...
+          # FIXME: maybe figure out how to make this work with the github app token...
+          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}"
