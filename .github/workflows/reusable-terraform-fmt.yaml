@@ -9,7 +9,7 @@ on:
         type: string
         description: The Terraform version to use.
         required: false
-        default: "3.12"
+        default: "1.10.5"
       working-directory:
         type: string
         description: The directory to lint.
@@ -26,8 +26,9 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3.1.2
         with:
-          terraform_version: "1.10.5"
+          terraform_version: ${{ inputs.terraform-version }}
 
       - name: Terraform fmt
+        shell: bash
         working-directory: ${ input.workdir }
         run: terraform fmt -recursive -check
