@@ -30,5 +30,5 @@ jobs:
 
       - name: Terraform fmt
         shell: bash
-        working-directory: ${ input.working-directory }
+        working-directory: ${{ inputs.working-directory }}
         run: terraform fmt -recursive -check

@@ -55,12 +55,12 @@ jobs:
 
       - name: Terraform Init
         shell: bash
-        working-directory: ${ input.working-directory }
+        working-directory: ${{ inputs.working-directory }}
         run: terraform init
 
       - name: Terraform Plan
         shell: bash
-        working-directory: ${ input.working-directory }
+        working-directory: ${{ inputs.working-directory }}
         id: plan
         run: |
           terraform plan -out=tfplan -no-color -lock=false | tee plan.md
@@ -73,7 +73,7 @@ jobs:
       - name: Summarize Plan
         id: summary
         shell: bash
-        working-directory: ${ input.working-directory }
+        working-directory: ${{ inputs.working-directory }}
         run: |
           tf-summarize -md tfplan | tee summary.md
           {
