@@ -28,7 +28,7 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
 
       - name: Run semantic-release
-        uses: cycjimmy/semantic-release-action@v4.1.1
+        uses: cycjimmy/semantic-release-action@b1b432f13acb7768e0c8efdec416d363a57546f2 # v4.1.1
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
         with:

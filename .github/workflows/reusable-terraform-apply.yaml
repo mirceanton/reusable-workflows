@@ -34,15 +34,15 @@ jobs:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3.1.2
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
         with:
           terraform_version: ${{ inputs.terraform-version }}
 
       - name: Setup terraform-backend-git
-        uses: plumber-cd/setup-terraform-backend-git@v1
+        uses: plumber-cd/setup-terraform-backend-git@f7f5c241e02e73b4552dd412fdf7fcc05044873b # v1
         with:
           version: 0.1.8
 
@@ -75,7 +75,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Create commit comment
-        uses: peter-evans/commit-comment@v3.0.0
+        uses: peter-evans/commit-comment@5a6f8285b8f2e8376e41fe1b563db48e6cf78c09 # v3.0.0
         with:
           token: "${{ steps.app-token.outputs.token }}"
           body: |
