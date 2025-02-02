@@ -17,7 +17,7 @@ on:
         default: "."
 
 jobs:
-  terraform-fmt:
+  fmt:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
