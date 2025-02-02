@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - Terraform FMT
+
+on:
+  workflow_call:
+    inputs:
+      terraform-version:
+        type: string
+        description: The Terraform version to use.
+        required: false
+        default: "3.12"
+      working-directory:
+        type: string
+        description: The directory to lint.
+        required: false
+        default: "."
+
+jobs:
+  terraform-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: "1.10.5"
+
+      - name: Terraform fmt
+        working-directory: ${ input.workdir }
+        run: terraform fmt -recursive -check
