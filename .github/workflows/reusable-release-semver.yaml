@@ -28,8 +28,10 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
 
       - name: Run semantic-release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          dry_run: "${{ inputs.dry-run }}"
+        uses: cycjimmy/semantic-release-action@v4.1.1
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+        with:
+          dry_run: "${{ inputs.dry-run }}"
+          extra_plugins: |
+            conventional-changelog-conventionalcommits
