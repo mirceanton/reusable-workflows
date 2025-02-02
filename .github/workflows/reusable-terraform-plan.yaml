@@ -110,9 +110,7 @@ jobs:
 
             mr-borboto ran a `terraform plan` on the code in this PR and this is the summary of those results:
 
-            ```txt
-            ${{ steps.plan.outputs.PLAN }}
-            ```
+            ${{ steps.summary.outputs.SUMMARY }}
 
             ## Click Below for the Full Plan Output
 
@@ -120,7 +118,7 @@ jobs:
             <summary>Full Plan Output</summary>
 
             ```txt
-            ${{ steps.summary.outputs.SUMMARY }}
+            ${{ steps.plan.outputs.PLAN }}
             ```
 
             </details>
