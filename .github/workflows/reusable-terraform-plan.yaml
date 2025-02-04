@@ -43,20 +43,20 @@ jobs:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3.1.2
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
         with:
           terraform_version: ${{ inputs.terraform-version }}
 
       - name: Setup terraform-backend-git
-        uses: plumber-cd/setup-terraform-backend-git@v1
+        uses: plumber-cd/setup-terraform-backend-git@f7f5c241e02e73b4552dd412fdf7fcc05044873b # v1
         with:
           version: 0.1.8
 
       - name: Setup terraform-summarize
-        uses: kishaningithub/setup-tf-summarize@v2
+        uses: kishaningithub/setup-tf-summarize@b752490b135f74e59d82e656a1dab7f11a937f84 # v2
 
       - name: Start backend
         run: terraform-backend-git &
@@ -91,7 +91,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Find Comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3
         id: fc
         with:
           token: "${{ steps.app-token.outputs.token }}"
@@ -99,7 +99,7 @@ jobs:
           body-includes: Terraform Plan Summary
 
       - name: Create or Update Comment
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4
         with:
           token: "${{ steps.app-token.outputs.token }}"
           comment-id: ${{ steps.fc.outputs.comment-id }}
