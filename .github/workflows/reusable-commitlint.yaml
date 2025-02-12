@@ -15,6 +15,11 @@ on:
         required: false
         type: string
         default: "latest"
+      commitlint-flags:
+        description: "Extra CLI flags to pass to commitlint."
+        required: false
+        type: string
+        default: ""
 
 jobs:
   commitlint:
@@ -39,4 +44,4 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "$PR_TITLE" > file.txt
-          commitlint --verbose --color -e=file.txt
+          commitlint ${{ inputs/commitlint-flags }} --verbose --color -e=file.txt
