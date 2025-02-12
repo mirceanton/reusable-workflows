@@ -44,4 +44,4 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "$PR_TITLE" > file.txt
-          commitlint ${{ inputs/commitlint-flags }} --verbose --color -e=file.txt
+          commitlint ${{ inputs.commitlint-flags }} --verbose --color -e=file.txt
