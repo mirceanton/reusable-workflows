@@ -15,6 +15,11 @@ on:
         type: string
         required: false
         default: "latest"
+      markdownlint-flags:
+        description: "Extra flags to pass to markdownlint"
+        type: string
+        required: false
+        default: ""
 
 jobs:
   release:
@@ -32,4 +37,4 @@ jobs:
         run: npm install -g markdownlint-cli@${{ inputs.markdownlint-cli-version }}
 
       - name: Run markdownlint
-        run: find . -name "*.md" -exec markdownlint {} +
+        run: find . -name "*.md" -exec markdownlint ${{ inputs.markdownlint-flags }} {} +
