@@ -53,7 +53,7 @@ jobs:
 
       - name: Install Renovate
         run: |
-          npm install renovate
+          npm install -g renovate
           npm list --depth=0
 
       - name: Renovate
