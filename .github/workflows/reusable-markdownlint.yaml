@@ -14,12 +14,12 @@ on:
         description: "Path to the markdownlint config file"
         type: string
         required: false
-        default: ".commitlintrc.json"
+        default: ".markdownlint.yaml"
       extra-flags:
         description: "Additional CLI flags for markdownlint"
         type: string
         required: false
-        default: "--color --verbose"
+        default: ""
 
 jobs:
   markdownlint:
@@ -38,7 +38,4 @@ jobs:
       - name: Run MarkdownLint
         working-directory: ${{ inputs.working-directory }}
         run: |
-          markdownlint "**/*.md" \
-            --dot \
-            --config ${{ inputs.config-file }} \
-            ${{ inputs.extra-flags }}
+          markdownlint "**/*.md" --dot --config ${{ inputs.config-file }} ${{ inputs.extra-flags }}

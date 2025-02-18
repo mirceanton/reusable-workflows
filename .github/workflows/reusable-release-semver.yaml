@@ -7,20 +7,19 @@ on:
     inputs:
       dry-run:
         type: boolean
-        description: "Run semantic-release in dry-run mode"
+        description: Run semantic-release in dry-run mode
         required: false
         default: false
       config-file:
-        description: "Path to the semantic-release config file"
+        description: Path to the semantic-release config file
         type: string
         required: false
-        default: ".commitlintrc.json"
+        default: .commitlintrc.json
       extra-flags:
-        description: "Additional CLI flags for semantic-release"
+        description: Additional CLI flags for semantic-release
         type: string
         required: false
-        default: "--color --verbose"
-
+        default: --color --verbose
 
 jobs:
   release:

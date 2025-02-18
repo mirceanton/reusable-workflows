@@ -6,23 +6,23 @@ on:
   workflow_call:
     inputs:
       working-directory:
+        description: "The directory to lint"
         type: string
-        description: The directory to lint.
         required: false
         default: "."
       config-file:
-        required: false
+        description: "Path to the yamllint config file"
         type: string
+        required: false
         default: ".yamllint.yaml"
-        description: The yamllint config file to use.
       extra-flags:
-        required: false
+        description: "Additional CLI flags for yamllint"
         type: string
+        required: false
         default: ""
-        description: Extra CLI flags.
 
 jobs:
-  lint:
+  yamllint:
     runs-on: ubuntu-latest
     container: docker.io/library/python:3.12-bookworm
     steps:
