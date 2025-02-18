@@ -5,21 +5,21 @@ name: Reusable - Markdown Lint
 on:
   workflow_call:
     inputs:
-      node-version:
-        description: "Node.js version"
+      working-directory:
         type: string
+        description: The directory to lint.
         required: false
-        default: "latest"
-      markdownlint-cli-version:
-        description: "markdownlint-cli version"
+        default: "."
+      config-file:
+        required: false
         type: string
+        default: ".markdownlint.yaml"
+        description: The config file to use.
+      extra-flags:
         required: false
-        default: "latest"
-      markdownlint-flags:
-        description: "Extra flags to pass to markdownlint"
         type: string
-        required: false
         default: ""
+        description: Extra CLI flags.
 
 jobs:
   release:
@@ -28,13 +28,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Install Node.js
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+      - name: Setup Tools
+        uses: jdx/mise-action@v2.1.11
         with:
-          node-version: "${{ inputs.node-version }}"
-
-      - name: Install markdownlint-cli
-        run: npm install -g markdownlint-cli@${{ inputs.markdownlint-cli-version }}
+          version: latest
+          mise_toml: |
+            [tools]
+            node = "latest"
+            "npm:conventional-changelog-conventionalcommits" = "latest"
+            "npm:markdownlint-cli" = "latest"
 
       - name: Run markdownlint
-        run: find . -name "*.md" -exec markdownlint ${{ inputs.markdownlint-flags }} {} +
+        working-directory: ${{ inputs.working-directory }}
+        run:  |
+          markdownlint **.md \
+            --dot \
+            --config ${{ inputs.config-file }} \
+            ${{ inputs.extra-flags }}
