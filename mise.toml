@@ -1,0 +1,22 @@
+[tools]
+uv = "latest"
+node = "latest"
+
+"npm:conventional-changelog-conventionalcommits" = "latest"
+"npm:commitlint" = "latest"
+
+"npm:semantic-release" = "latest"
+"npm:@semantic-release/commit-analyzer" = "latest"
+"npm:@semantic-release/release-notes-generator" = "latest"
+"npm:@semantic-release/github" = "latest"
+
+"npm:markdownlint-cli" = "latest"
+
+"aqua:rhysd/actionlint" = "latest"
+
+"aqua:koalaman/shellcheck" = "latest"
+
+"aqua:golangci/golangci-lint" = "latest"
+
+
+"pipx:yamllint" = "latest"
