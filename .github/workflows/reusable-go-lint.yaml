@@ -28,13 +28,6 @@ jobs:
       - name: Install GolangCI Lint
         run: go install github.com/rhysd/actionlint/cmd/actionlint@latest
 
-      - name: Setup Tools
-        uses: jdx/mise-action@v2.1.11
-        with:
-          mise_toml: |
-            [tool]
-            "aqua:golangci/golangci-lint" = "latest"
-
       - name: Run golangci-lint
         working-directory: ${{ inputs.working-directory }}
         run: golangci-lint run ${{ inputs.extra-flags }}
