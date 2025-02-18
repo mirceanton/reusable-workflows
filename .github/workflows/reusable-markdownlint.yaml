@@ -39,8 +39,8 @@ jobs:
 
       - name: Run markdownlint
         working-directory: ${{ inputs.working-directory }}
-        run:  |
-          markdownlint **.md \
+        run: |
+          markdownlint ./**.md \
             --dot \
             --config ${{ inputs.config-file }} \
             ${{ inputs.extra-flags }}
