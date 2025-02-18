@@ -14,7 +14,7 @@ on:
         description: Path to the semantic-release config file
         type: string
         required: false
-        default: .commitlintrc.json
+        default: .releaserc
       extra-flags:
         description: Additional CLI flags for semantic-release
         type: string
