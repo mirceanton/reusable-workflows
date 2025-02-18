@@ -10,6 +10,17 @@ on:
         description: Dry Run
         default: false
         required: false
+      config-file:
+        required: false
+        type: string
+        default: ".yamllint.yaml"
+        description: The yamllint config file to use.
+      extra-flags:
+        required: false
+        type: string
+        default: ""
+        description: Extra CLI flags.
+
 
 jobs:
   release:
