@@ -27,7 +27,7 @@ on:
         default: ""
 
 jobs:
-  lint:
+  actionlint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
