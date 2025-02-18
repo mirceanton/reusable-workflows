@@ -15,6 +15,16 @@ on:
         required: false
         type: string
         default: "latest"
+      config-file:
+        description: "Path to the actionlint config file"
+        type: string
+        required: false
+        default: ".github/actionlint.yaml"
+      extra-flags:
+        description: "Additional CLI flags for actionlint"
+        type: string
+        required: false
+        default: ""
 
 jobs:
   lint:
@@ -32,4 +42,4 @@ jobs:
         run: go install github.com/rhysd/actionlint/cmd/actionlint@${{ inputs.actionlint-version }}
 
       - name: Run actionlint
-        run: actionlint
+        run: actionlint -config-file ${{ inputs.config-file }} ${{ inputs.extra-flags }}
