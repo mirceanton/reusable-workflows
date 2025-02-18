@@ -53,10 +53,10 @@ jobs:
 
       - name: Install Renovate
         run: |
-          npm install -g renovate
-          npm list -g --depth=0
+          npm install renovate
+          npm list --depth=0
 
       - name: Renovate
-        run: renovate
+        run: npx renovate
         env:
           RENOVATE_TOKEN: "${{ steps.app-token.outputs.token }}"

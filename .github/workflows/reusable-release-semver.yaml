@@ -41,17 +41,17 @@ jobs:
 
       - name: Install Semantic Release
         run: |
-          npm install -g \
+          npm install \
             semantic-release \
             @semantic-release/commit-analyzer \
             @semantic-release/release-notes-generator \
             @semantic-release/github
-          npm list -g --depth=0
+          npm list --depth=0
 
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          semantic-release --extends ${{ inputs.config-file }} \
+          npx semantic-release --extends ${{ inputs.config-file }} \
             ${{ inputs.dry-run && '--dry-run' || '' }} \
             ${{ inputs.extra-flags }}

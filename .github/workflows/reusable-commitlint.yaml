@@ -27,8 +27,8 @@ jobs:
 
       - name: Install CommitLint
         run: |
-          npm install -g @commitlint/cli @commitlint/config-conventional
-          npm list -g --depth=0
+          npm install @commitlint/cli @commitlint/config-conventional
+          npm list --depth=0
 
       - name: Validate PR commits with CommitLint
         if: github.event_name == 'pull_request'
@@ -36,6 +36,4 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "$PR_TITLE" > pr-title.txt
-          commitlint --edit=pr-title.txt \
-            --config=${{ inputs.config-file }} \
-            ${{ inputs.extra-flags }}
+          npx commitlint --edit=pr-title.txt --config=${{ inputs.config-file }} ${{ inputs.extra-flags }}
