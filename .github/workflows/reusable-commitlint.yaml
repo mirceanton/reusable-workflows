@@ -29,7 +29,7 @@ jobs:
           mise_toml: |
             [tools]
             node = "latest"
-            "npm:conventional-changelog-conventionalcommits" = "latest"
+            "npm:@commitlint/config-conventional" = "latest"
             "npm:commitlint" = "latest"
 
       - name: Validate PR commits with commitlint

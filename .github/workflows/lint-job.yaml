@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/reusable-commitlint.yaml
     secrets: inherit
     with:
-      config-file: .github/configs/.commitlintrc.json
+      config-file: ./.github/configs/commitlint.config.mjs
 
   markdownlint:
     uses: ./.github/workflows/reusable-markdownlint.yaml
