@@ -16,7 +16,6 @@ on:
         required: false
         default: ""
 
-
 jobs:
   actionlint:
     runs-on: ubuntu-latest

@@ -17,7 +17,7 @@ on:
         description: Extra CLI flags.
 
 jobs:
-  lint:
+  golangci-lint:
     runs-on: ubuntu-latest
     container: docker.io/library/golang:1.24.0-bookworm
 

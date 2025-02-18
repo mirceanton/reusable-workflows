@@ -22,7 +22,7 @@ on:
         default: --color --verbose
 
 jobs:
-  release:
+  semver:
     runs-on: ubuntu-latest
     container: docker.io/library/node:23-bookworm
 
