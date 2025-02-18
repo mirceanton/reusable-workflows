@@ -7,17 +7,17 @@ on:
   pull_request: {}
 
 jobs:
+  actionlint:
+    uses: ./.github/workflows/reusable-actionlint.yaml
+    secrets: inherit
+    with:
+      config-file: ./.github/configs/actionlint.yaml
+
   yamllint:
     uses: ./.github/workflows/reusable-yamllint.yaml
     secrets: inherit
     with:
       yamllint-args: "--config-file=.yamllint.yaml"
-
-  actionlint:
-    uses: ./.github/workflows/reusable-actionlint.yaml
-    secrets: inherit
-    with:
-      actionlint-version: "v1.7.1"
 
   shellcheck:
     uses: ./.github/workflows/reusable-shellcheck.yaml
