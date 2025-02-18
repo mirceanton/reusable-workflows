@@ -27,11 +27,23 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
+      - name: Setup Tools
+        uses: jdx/mise-action@v2.1.11
+        with:
+          version: latest
+          mise_toml: |
+            [tools]
+            node = "latest"
+            "npm:semantic-release" = "latest"
+            "npm:@semantic-release/commit-analyzer" = "latest"
+            "npm:@semantic-release/release-notes-generator" = "latest"
+            "npm:@semantic-release/github" = "latest"
+
       - name: Run semantic-release
-        uses: cycjimmy/semantic-release-action@b1b432f13acb7768e0c8efdec416d363a57546f2 # v4.1.1
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-        with:
-          dry_run: "${{ inputs.dry-run }}"
-          extra_plugins: |
-            conventional-changelog-conventionalcommits
+        run: |
+          semantic-release \
+              ${{ inputs.dry-run && '--dry-run' || '' }} \
+              --extends ${{ inputs.config-file }} \
+              ${{ inputs.extra-flags }}

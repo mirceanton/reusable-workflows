@@ -12,8 +12,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Install ShellCheck
-        run: sudo apt-get install -y shellcheck
+      - name: Setup Tools
+        uses: jdx/mise-action@v2.1.11
+        with:
+          version: latest
+          mise_toml: |
+            [tools]
+            uv = "latest"
+            "aqua:koalaman/shellcheck" = "latest"
 
       - name: Run ShellCheck
         run: find . -name "*.sh" -exec shellcheck {} +
