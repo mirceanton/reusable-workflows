@@ -19,18 +19,13 @@ on:
 jobs:
   commitlint:
     runs-on: ubuntu-latest
+    container: docker.io/library/node:23-bookworm
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Setup Tools
-        uses: jdx/mise-action@v2.1.11
-        with:
-          mise_toml: |
-            [tools]
-            node = "latest"
-            "npm:@commitlint/config-conventional" = "latest"
-            "npm:commitlint" = "latest"
+      - name: Install Tools
+        run: npm install -g @commitlint/cli @commitlint/config-conventional
 
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request'
