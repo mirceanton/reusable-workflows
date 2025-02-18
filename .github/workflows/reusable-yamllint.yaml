@@ -31,7 +31,6 @@ jobs:
       - name: Setup Tools
         uses: jdx/mise-action@v2.1.11
         with:
-          version: latest
           mise_toml: |
             [tools]
             uv = "latest"
