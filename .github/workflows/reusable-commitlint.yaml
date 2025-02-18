@@ -5,21 +5,16 @@ name: Reusable - CommitLint
 on:
   workflow_call:
     inputs:
-      node-version:
-        description: "Node version"
-        required: false
+      config-file:
+        description: "Path to the config file"
         type: string
-        default: "latest"
-      commitlint-version:
-        description: "Commitlint version"
         required: false
+        default: ".commitlintrc.json"
+      extra-flags:
+        description: "Extra CLI flags"
         type: string
-        default: "latest"
-      commitlint-flags:
-        description: "Extra CLI flags to pass to commitlint."
         required: false
-        type: string
-        default: ""
+        default: "--color --verbose"
 
 jobs:
   commitlint:
@@ -28,15 +23,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Set up Node
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+      - name: Setup Tools
+        uses: jdx/mise-action@v2.1.11
         with:
-          node-version: "${{ inputs.node-version }}"
-
-      - name: Install commitlint
-        run: |
-          npm install conventional-changelog-conventionalcommits
-          npm install -g @commitlint/cli@${{ inputs.commitlint-version }}
+          version: latest
+          mise_toml: |
+            [tools]
+            node = "latest"
+            "npm:conventional-changelog-conventionalcommits" = "latest"
+            "npm:commitlint" = "latest"
 
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request'
@@ -44,4 +39,6 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "$PR_TITLE" > file.txt
-          commitlint ${{ inputs.commitlint-flags }} --verbose --color -e=file.txt
+          commitlint --edit=file.txt \
+            --config=${{ inputs.config-file }} \
+            ${{ inputs.extra-flags }}
