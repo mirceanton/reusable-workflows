@@ -7,30 +7,27 @@ on:
   pull_request: {}
 
 jobs:
-  yamllint:
-    uses: ./.github/workflows/reusable-yamllint.yaml
-    secrets: inherit
-    with:
-      yamllint-args: "--config-file=.yamllint.yaml"
-
   actionlint:
     uses: ./.github/workflows/reusable-actionlint.yaml
-    secrets: inherit
     with:
-      actionlint-version: "v1.7.1"
-
-  shellcheck:
-    uses: ./.github/workflows/reusable-shellcheck.yaml
-    secrets: inherit
-
-  markdownlint:
-    uses: ./.github/workflows/reusable-markdownlint.yaml
-    secrets: inherit
-    with:
-      markdownlint-cli-version: "0.41.0"
+      config-file: .github/configs/actionlint.yaml
 
   commitlint:
     uses: ./.github/workflows/reusable-commitlint.yaml
     secrets: inherit
     with:
-      commitlint-version: "v19.5.0"
+      config-file: .github/configs/.commitlintrc.json
+
+  markdownlint:
+    uses: ./.github/workflows/reusable-markdownlint.yaml
+    secrets: inherit
+    with:
+      config-file: .github/configs/.markdownlint.yaml
+
+  shellcheck:
+    uses: ./.github/workflows/reusable-shellcheck.yaml
+
+  yamllint:
+    uses: ./.github/workflows/reusable-yamllint.yaml
+    with:
+      config-file: .github/configs/.yamllint.yaml

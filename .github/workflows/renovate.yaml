@@ -15,13 +15,6 @@ on:
         default: debug
         required: false
 
-  # Dry run on pull requests
-  pull_request:
-    paths:
-      - ".github/workflows/renovate.yaml"
-      - ".renovate/*.json5"
-      - "renovate.json5"
-
   # Scheduled hourly
   schedule:
     - cron: "0 * * * *"
@@ -37,4 +30,4 @@ jobs:
     with:
       dry-run: "${{ inputs.dry-run == true || github.event_name == 'pull_request' }}"
       log-level: "${{ inputs.log-level || 'debug' }}"
-      config-file: renovate.json5
+      config-file: .github/configs/renovate.json5
