@@ -32,8 +32,8 @@ jobs:
 
       - name: Install MarkdownLint
         run: |
-          npm install markdownlint-cli
-          npm list --depth=0
+          npm install -g markdownlint-cli
+          npm list -g --depth=0
 
       - name: Run MarkdownLint
         working-directory: ${{ inputs.working-directory }}
