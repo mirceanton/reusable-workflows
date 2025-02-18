@@ -6,41 +6,39 @@ on:
   workflow_call:
     inputs:
       working-directory:
+        description: "The directory to lint"
         type: string
-        description: The directory to lint.
         required: false
         default: "."
       config-file:
-        required: false
+        description: "Path to the markdownlint config file"
         type: string
-        default: ".markdownlint.yaml"
-        description: The config file to use.
+        required: false
+        default: ".commitlintrc.json"
       extra-flags:
-        required: false
+        description: "Additional CLI flags for markdownlint"
         type: string
-        default: ""
-        description: Extra CLI flags.
+        required: false
+        default: "--color --verbose"
 
 jobs:
-  release:
+  markdownlint:
     runs-on: ubuntu-latest
+    container: docker.io/library/node:23-bookworm
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
 
-      - name: Setup Tools
-        uses: jdx/mise-action@v2.1.11
-        with:
-          mise_toml: |
-            [tools]
-            node = "latest"
-            "npm:conventional-changelog-conventionalcommits" = "latest"
-            "npm:markdownlint-cli" = "latest"
+      - name: Install MarkdownLint
+        run: |
+          npm install markdownlint-cli
+          npm list --depth=0
 
-      - name: Run markdownlint
+      - name: Run MarkdownLint
         working-directory: ${{ inputs.working-directory }}
         run: |
-          markdownlint ./**.md \
+          markdownlint "**/*.md" \
             --dot \
             --config ${{ inputs.config-file }} \
             ${{ inputs.extra-flags }}

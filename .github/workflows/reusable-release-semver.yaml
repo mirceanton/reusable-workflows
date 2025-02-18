@@ -7,53 +7,52 @@ on:
     inputs:
       dry-run:
         type: boolean
-        description: Dry Run
+        description: "Run semantic-release in dry-run mode"
+        required: false
         default: false
-        required: false
       config-file:
-        required: false
+        description: "Path to the semantic-release config file"
         type: string
-        default: ".yamllint.yaml"
-        description: The yamllint config file to use.
+        required: false
+        default: ".commitlintrc.json"
       extra-flags:
-        required: false
+        description: "Additional CLI flags for semantic-release"
         type: string
-        default: ""
-        description: Extra CLI flags.
+        required: false
+        default: "--color --verbose"
 
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    container: docker.io/library/node:23-bookworm
+
     steps:
-      - name: Generate Token
-        uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
+      - name: Generate GitHub App Token
+        uses: actions/create-github-app-token@v1.11.5
         id: app-token
         with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
         with:
-          token: "${{ steps.app-token.outputs.token }}"
+          token: ${{ steps.app-token.outputs.token }}
 
-      - name: Setup Tools
-        uses: jdx/mise-action@v2.1.11
-        with:
-          mise_toml: |
-            [tools]
-            node = "latest"
-            "npm:semantic-release" = "latest"
-            "npm:@semantic-release/commit-analyzer" = "latest"
-            "npm:@semantic-release/release-notes-generator" = "latest"
-            "npm:@semantic-release/github" = "latest"
-
-      - name: Run semantic-release
-        env:
-          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - name: Install Semantic Release
         run: |
-          semantic-release \
-              ${{ inputs.dry-run && '--dry-run' || '' }} \
-              --extends ${{ inputs.config-file }} \
-              ${{ inputs.extra-flags }}
+          npm install \
+            semantic-release \
+            @semantic-release/commit-analyzer \
+            @semantic-release/release-notes-generator \
+            @semantic-release/github
+          npm list --depth=0
+
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          semantic-release --extends ${{ inputs.config-file }} \
+            ${{ inputs.dry-run && '--dry-run' || '' }} \
+            ${{ inputs.extra-flags }}

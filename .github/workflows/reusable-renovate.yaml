@@ -22,6 +22,7 @@ on:
         required: false
 
 env:
+  # https://docs.renovatebot.com/self-hosted-configuration/
   LOG_LEVEL: "${{ inputs.log-level || 'debug' }}"
   RENOVATE_AUTODISCOVER: true
   RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
@@ -30,10 +31,13 @@ env:
   RENOVATE_PLATFORM: github
   RENOVATE_PLATFORM_COMMIT: true
   RENOVATE_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+  RENOVATE_CONFIG_FILE: "${{ inputs.config-file }}"
 
 jobs:
   renovate:
     runs-on: ubuntu-latest
+    container: docker.io/library/node:23-bookworm
+
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
@@ -47,9 +51,12 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
+      - name: Install Renovate
+        run: |
+          npm install renovate
+          npm list --depth=0
+
       - name: Renovate
-        uses: renovatebot/github-action@e084b5ac6fd201023db6dd7743aec023babb02c8 # v41.0.13
-        with:
-          token: "${{ steps.app-token.outputs.token }}"
-          configurationFile: "${{ inputs.config-file }}"
-          renovate-version: "${{ env.WORKFLOW_RENOVATE_VERSION }}"
+        run: renovate
+        env:
+          RENOVATE_TOKEN: "${{ steps.app-token.outputs.token }}"
