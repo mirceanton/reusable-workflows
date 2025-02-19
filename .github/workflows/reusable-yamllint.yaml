@@ -24,7 +24,8 @@ on:
 jobs:
   yamllint:
     runs-on: ubuntu-latest
-    container: docker.io/library/python:3.12-bookworm
+    container: mcr.microsoft.com/devcontainers/python:3.12
+
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

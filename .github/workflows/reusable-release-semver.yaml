@@ -24,7 +24,7 @@ on:
 jobs:
   semver:
     runs-on: ubuntu-latest
-    container: docker.io/library/node:23-bookworm
+    container: mcr.microsoft.com/devcontainers/javascript-node:20
 
     steps:
       - name: Generate GitHub App Token
