@@ -23,8 +23,6 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/devcontainers/go:1.23
-
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
@@ -45,6 +43,8 @@ jobs:
           username: "${{ github.actor }}"
           password: "${{ secrets.GHCR_RW_TOKEN }}"
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
 
       - name: Install Goreleaser
         run: go install github.com/goreleaser/goreleaser@latest

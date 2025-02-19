@@ -19,12 +19,13 @@ on:
 jobs:
   golangci-lint:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/devcontainers/go:1.23
-
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
+      
       - name: Install GolangCI Lint
         run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
