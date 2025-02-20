@@ -10,6 +10,7 @@
 		":skipStatusChecks",
 		":timezone(Europe/Bucharest)",
 		"github>mirceanton/renovate-config//labels/all.json5",
-		"github>mirceanton/renovate-config//semantic-commits/all.json5"
+		"github>mirceanton/renovate-config//semantic-commits/all.json5",
+		"github>mirceanton/renovate-config//auto-merge/github-actions.json5"
 	]
 }
