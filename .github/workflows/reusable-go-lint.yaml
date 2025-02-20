@@ -17,7 +17,7 @@ on:
         description: Path to the golangci-lint config file
         type: string
         required: false
-        default: .golangci.yml
+        default: .golangci.yaml
       extra-flags:
         description: Additional CLI flags for golangci-lint
         type: string
