@@ -27,7 +27,7 @@ jobs:
     uses: ./.github/workflows/reusable-markdownlint.yaml
     secrets: inherit
     with:
-      markdownlint-cli-version: "0.41.0"
+      config-file: .github/configs/.markdownlint.yaml
 
   commitlint:
     uses: ./.github/workflows/reusable-commitlint.yaml
