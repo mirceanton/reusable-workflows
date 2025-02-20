@@ -16,7 +16,6 @@ on:
         required: false
         default: "."
 
-
 env:
   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
   GIT_USERNAME: mr-borboto
