@@ -33,4 +33,4 @@ jobs:
     uses: ./.github/workflows/reusable-commitlint.yaml
     secrets: inherit
     with:
-      commitlint-version: "v19.5.0"
+      config-file: ./.github/configs/commitlint.config.mjs
