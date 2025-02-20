@@ -12,7 +12,7 @@ on:
         required: false
 
 jobs:
-  release:
+  calver:
     runs-on: ubuntu-latest
 
     steps:
