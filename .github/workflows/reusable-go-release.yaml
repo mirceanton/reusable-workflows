@@ -66,7 +66,7 @@ jobs:
           go-version: ${{ inputs.go-version }}
 
       - name: Install Goreleaser
-        run: go install github.com/goreleaser/goreleaser@${{ inputs.goreleaser-version }}
+        run: go install github.com/goreleaser/goreleaser/v2@${{ inputs.goreleaser-version }}
 
       - name: Run GoReleaser
         run: goreleaser release --config ${{ inputs.config-file }} ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
