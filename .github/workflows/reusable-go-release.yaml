@@ -4,21 +4,38 @@ name: Reusable - Goreleaser
 
 on:
   workflow_call:
+    secrets:
+      BOT_APP_ID:
+        required: true
+      BOT_APP_PRIVATE_KEY:
+        required: true
+      GHCR_RW_TOKEN:
+        required: true
+
     inputs:
       go-version:
+        description: The version of golang to use
         type: string
-        description: The Go version to use.
-        required: false
-        default: "stable"
+        required: true
       goreleaser-version:
+        description: The version of goreleaser to install
         type: string
-        description: The GoReleaser version to use.
-        required: false
-        default: "v2.7.0"
+        required: true
       dry-run:
+        description: Whether to run a dry run or not
         type: boolean
-        description: Whether to run a dry run or not.
+        required: false
         default: false
+      config-file:
+        description: Path to the goreleaser config file
+        type: string
+        required: false
+        default: .goreleaser.yaml
+      extra-flags:
+        description: Additional CLI flags for goreleaser
+        type: string
+        required: false
+        default: "--clean"
 
 jobs:
   goreleaser:
@@ -36,14 +53,6 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
-      - name: Set up Go
-        uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
-        with:
-          go-version: "${{ inputs.go-version }}"
-
-      - name: Install goreleaser
-        run: go install github.com/goreleaser/goreleaser/@${{ inputs.goreleaser-version }}
-
       - name: Login to Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
@@ -51,9 +60,16 @@ jobs:
           username: "${{ github.actor }}"
           password: "${{ secrets.GHCR_RW_TOKEN }}"
 
+      - name: Setup Go
+        uses: actions/setup-go@v5.3.0
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      - name: Install Goreleaser
+        run: go install github.com/goreleaser/goreleaser/v2@${{ inputs.goreleaser-version }}
+
       - name: Run GoReleaser
-        run: goreleaser release --clean ${{ inputs.dry-run && '--snapshot' || '' }}
+        run: goreleaser release --config ${{ inputs.config-file }} ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-          # FIXME: maybe figure out how to make this work with the github app token...
-          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}"
+          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: should use app token but it doesnt work :(
