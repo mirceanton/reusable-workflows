@@ -29,11 +29,14 @@ on:
 jobs:
   actionlint:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/devcontainers/go:1.23
-
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Go
+        uses: actions/setup-go@v5.3.0
+        with:
+          go-version: ${{ inputs.go-version }}
 
       - name: Install ActionLint
         run: go install github.com/rhysd/actionlint/cmd/actionlint@${{ inputs.actionlint-version }}
