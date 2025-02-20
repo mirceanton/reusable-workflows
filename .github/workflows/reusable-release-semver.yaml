@@ -4,34 +4,85 @@ name: Reusable - Release SemVer
 
 on:
   workflow_call:
+    secrets:
+      BOT_APP_ID:
+        required: true
+      BOT_APP_PRIVATE_KEY:
+        required: true
     inputs:
-      dry-run:
-        type: boolean
-        description: Dry Run
-        default: false
+      node-version:
+        description: The version of Node.js to use
+        type: string
         required: false
+        default: lts/*
+      semantic-release-version:
+        description: The version of semantic-release to install
+        type: string
+        required: false
+        default: latest
+      analyzer-version:
+        description: The version of @semantic-release/commit-analyzer to install
+        type: string
+        required: false
+        default: latest
+      notes-generator-version:
+        description: The version of @semantic-release/release-notes-generator to install
+        type: string
+        required: false
+        default: latest
+      github-plugin-version:
+        description: The version of @semantic-release/github to install
+        type: string
+        required: false
+        default: latest
+      dry-run:
+        description: Run semantic-release in dry-run mode
+        type: boolean
+        required: false
+        default: false
+      config-file:
+        description: Path to the semantic-release config file
+        type: string
+        required: false
+        default: .releaserc
+      extra-flags:
+        description: Additional CLI flags for semantic-release
+        type: string
+        required: false
+        default: ""
 
 jobs:
-  release:
+  semver:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Generate Token
+      - name: Generate GitHub App Token
         uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
         id: app-token
         with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          token: "${{ steps.app-token.outputs.token }}"
+          token: ${{ steps.app-token.outputs.token }}
 
-      - name: Run semantic-release
-        uses: cycjimmy/semantic-release-action@b1b432f13acb7768e0c8efdec416d363a57546f2 # v4.1.1
-        env:
-          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
         with:
-          dry_run: "${{ inputs.dry-run }}"
-          extra_plugins: |
-            conventional-changelog-conventionalcommits
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install Semantic Release
+        run: |
+          npm install \
+            semantic-release@${{ inputs.semantic-release-version }} \
+            @semantic-release/commit-analyzer@${{ inputs.analyzer-version }} \
+            @semantic-release/release-notes-generator@${{ inputs.notes-generator-version }} \
+            @semantic-release/github@${{ inputs.github-plugin-version }}
+          npm list --depth=0
+
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: npx semantic-release --extends ${{ inputs.config-file }} ${{ inputs.dry-run && '--dry-run' || '' }} ${{ inputs.extra-flags }}
