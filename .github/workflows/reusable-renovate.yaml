@@ -3,26 +3,46 @@
 name: Reusable - Renovate
 
 on:
-  # from other repositories
   workflow_call:
+    secrets:
+      BOT_APP_ID:
+        required: true
+      BOT_APP_PRIVATE_KEY:
+        required: true
     inputs:
+      node-version:
+        description: The version of Node.js to use
+        type: string
+        required: false
+        default: lts/*
+      renovate-version:
+        description: The version of renovate to install
+        type: string
+        required: false
+        default: latest
       config-file:
         description: Path to the renovate config file
+        type: string
         required: true
-        type: string
       dry-run:
-        type: boolean
         description: Dry Run
+        type: boolean
+        required: false
         default: false
-        required: false
       log-level:
-        type: string
         description: Log Level
-        default: debug
+        type: string
         required: false
+        default: debug
+      extra-flags:
+        description: Additional CLI flags for renovate
+        type: string
+        required: false
+        default: ""
 
 env:
-  LOG_LEVEL: "${{ inputs.log-level || 'debug' }}"
+  # https://docs.renovatebot.com/self-hosted-configuration/
+  LOG_LEVEL: "${{ inputs.log-level }}"
   RENOVATE_AUTODISCOVER: true
   RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
   RENOVATE_DRY_RUN: "${{ inputs.dry-run == true }}"
@@ -30,6 +50,7 @@ env:
   RENOVATE_PLATFORM: github
   RENOVATE_PLATFORM_COMMIT: true
   RENOVATE_GIT_AUTHOR: "mr-borboto[bot] <170036086+mr-borboto[bot]@users.noreply.github.com>"
+  RENOVATE_CONFIG_FILE: "${{ inputs.config-file }}"
 
 jobs:
   renovate:
@@ -47,9 +68,17 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
-      - name: Renovate
-        uses: renovatebot/github-action@e084b5ac6fd201023db6dd7743aec023babb02c8 # v41.0.13
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
         with:
-          token: "${{ steps.app-token.outputs.token }}"
-          configurationFile: "${{ inputs.config-file }}"
-          renovate-version: "${{ env.WORKFLOW_RENOVATE_VERSION }}"
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install Renovate
+        run: |
+          npm install -g renovate@${{ inputs.renovate-version }}
+          npm list --depth=0
+
+      - name: Run Renovate
+        env:
+          RENOVATE_TOKEN: "${{ steps.app-token.outputs.token }}"
+        run: npx renovate ${{ inputs.extra-flags }}
