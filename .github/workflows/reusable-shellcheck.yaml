@@ -9,7 +9,7 @@ on:
         description: The version of shellcheck to install
         type: string
         required: false
-        default: stable
+        default: latest
       config-file:
         description: Path to the shellcheck config file
         type: string
