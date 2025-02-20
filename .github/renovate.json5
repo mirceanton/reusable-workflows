@@ -1,5 +1,15 @@
 {
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"dependencyDashboardTitle": "Renovate Dashboard 🤖",
+	"onboarding": false,
 	"extends": [
-		"github>mirceanton/reusable-workflows//.renovate/default.json5"
+		"config:best-practices",
+		":dependencyDashboard",
+		":disableRateLimiting",
+		":semanticCommits",
+		":skipStatusChecks",
+		":timezone(Europe/Bucharest)",
+		"github>mirceanton/renovate-config//labels/all.json5",
+		"github>mirceanton/renovate-config//semantic-commits/all.json5"
 	]
 }
