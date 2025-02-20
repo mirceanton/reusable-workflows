@@ -1,0 +1,26 @@
+[tools]
+go = "latest"
+node = "latest"
+uv = "latest"
+
+"aqua:rhysd/actionlint" = "latest"
+
+"npm:@commitlint/cli" = "latest"
+"npm:@commitlint/config-conventional" = "latest"
+
+"aqua:golangci/golangci-lint" = "latest"
+
+"aqua:goreleaser/goreleaser" = "latest"
+
+"npm:markdownlint-cli" = "latest"
+
+"npm:semantic-release" = "latest"
+"npm:@semantic-release/commit-analyzer" = "latest"
+"npm:@semantic-release/release-notes-generator" = "latest"
+"npm:@semantic-release/github" = "latest"
+
+"npm:renovate" = "latest"
+
+"aqua:koalaman/shellcheck" = "latest"
+
+"pipx:yamllint" = "latest"
