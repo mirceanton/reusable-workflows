@@ -10,7 +10,7 @@ on:
         type: string
         required: false
         default: stable
-      actinlint-version:
+      actionlint-version:
         description: The version of actionlint to use.
         type: string
         required: false
