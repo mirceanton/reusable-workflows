@@ -5,13 +5,18 @@ name: Reusable - ActionLint
 on:
   workflow_call:
     inputs:
-      config-file:
-        description: "Path to the actionlint config file"
+      go-version:
+        description: The version of golang to use.
         type: string
         required: false
-        default: ".github/actionlint.yaml"
+        default: stable
+      config-file:
+        description: Path to the actionlint config file
+        type: string
+        required: false
+        default: .github/actionlint.yaml
       extra-flags:
-        description: "Additional CLI flags for actionlint"
+        description: Additional CLI flags for actionlint
         type: string
         required: false
         default: ""
@@ -24,9 +29,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      
+      - name: Setup Go
+        uses: actions/setup-go@v5.3.0
+        with:
+          go-version: ${{ inputs.go-version }}
 
       - name: Install ActionLint
-        run: go install github.com/rhysd/actionlint/cmd/actionlint@latest
+        run: go install github.com/rhysd/actionlint/cmd/actionlint@${{ inputs.actionlint-version }}
 
       - name: Run actionlint
         run: actionlint -config-file ${{ inputs.config-file }} ${{ inputs.extra-flags }}

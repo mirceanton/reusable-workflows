@@ -1,24 +1,42 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Reusable - Goreleaser
 
 on:
   workflow_call:
+    secrets:
+      BOT_APP_ID:
+        required: true
+      BOT_APP_PRIVATE_KEY:
+        required: true
+      GHCR_RW_TOKEN:
+        required: true
+
     inputs:
+      go-version:
+        description: The version of golang to use
+        type: string
+        required: false
+        default: stable
+      goreleaser-version:
+        description: The version of goreleaser to install
+        type: string
+        required: false
+        default: latest
       dry-run:
+        description: Whether to run a dry run or not
         type: boolean
-        description: Whether to run a dry run or not.
+        required: false
         default: false
-      working-directory:
+      config-file:
+        description: Path to the goreleaser config file
         type: string
-        description: The directory to lint.
         required: false
-        default: "."
+        default: .goreleaser.yaml
       extra-flags:
-        required: false
+        description: Additional CLI flags for goreleaser
         type: string
+        required: false
         default: "--clean"
-        description: Extra CLI flags.
 
 jobs:
   goreleaser:
@@ -44,16 +62,15 @@ jobs:
           password: "${{ secrets.GHCR_RW_TOKEN }}"
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v5.3.0
+        with:
+          go-version: ${{ inputs.go-version }}
 
       - name: Install Goreleaser
-        run: go install github.com/goreleaser/goreleaser@latest
+        run: go install github.com/goreleaser/goreleaser@${{ inputs.goreleaser-version }}
 
       - name: Run GoReleaser
-        working-directory: ${{ inputs.working-directory }}
+        run: goreleaser release --config ${{ inputs.config-file }} ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-          # FIXME: maybe figure out how to make this work with the github app token...
-          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}"
-        run: |
-          goreleaser release ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
+          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: should use app token but it doesnt work :(

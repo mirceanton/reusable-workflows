@@ -1,33 +1,53 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Reusable - CommitLint
 
 on:
   workflow_call:
     inputs:
+      node-version:
+        description: The version of Node.js to use
+        type: string
+        required: false
+        default: lts/*
+      commitlint-version:
+        description: The version of @commitlint/cli to install
+        type: string
+        required: false
+        default: latest
+      commitlint-config-version:
+        description: The version of @commitlint/config-conventional to install
+        type: string
+        required: false
+        default: latest
       config-file:
-        description: "Path to the commitlint config file"
+        description: Path to the commitlint config file
         type: string
         required: false
-        default: ".commitlintrc.json"
+        default: .commitlintrc.json
       extra-flags:
-        description: "Additional CLI flags for commitlint"
+        description: Additional CLI flags for commitlint
         type: string
         required: false
-        default: "--color --verbose"
+        default: --color --verbose
 
 jobs:
   commitlint:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/devcontainers/javascript-node:20
-
+    
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.2.0
+        with:
+          node-version: ${{ inputs.node-version }}
 
       - name: Install CommitLint
         run: |
-          npm install -g @commitlint/cli @commitlint/config-conventional
+          npm install -g \
+            @commitlint/cli@${{ inputs.commitlint-version }} \
+            @commitlint/config-conventional@${{ inputs.commitlint-config-version }}
           npm list -g --depth=0
 
       - name: Validate PR commits with CommitLint

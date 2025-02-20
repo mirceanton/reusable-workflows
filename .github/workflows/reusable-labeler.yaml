@@ -3,8 +3,12 @@
 name: Reusable - Labeler
 
 on:
-  # from other repositories
   workflow_call:
+    secrets:
+      BOT_APP_ID:
+        required: true
+      BOT_APP_PRIVATE_KEY:
+        required: true
     inputs:
       config-file:
         type: string

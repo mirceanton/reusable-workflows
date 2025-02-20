@@ -1,22 +1,26 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Reusable - Markdown Lint
 
 on:
   workflow_call:
     inputs:
-      working-directory:
-        description: "The directory to lint"
+      node-version:
+        description: The version of Node.js to use
         type: string
         required: false
-        default: "."
+        default: lts/*
+      markdownlint-version:
+        description: The version of markdownlint-cli to install
+        type: string
+        required: false
+        default: latest
       config-file:
-        description: "Path to the markdownlint config file"
+        description: Path to the markdownlint config file
         type: string
         required: false
-        default: ".markdownlint.yaml"
+        default: .markdownlint.yaml
       extra-flags:
-        description: "Additional CLI flags for markdownlint"
+        description: Additional CLI flags for markdownlint
         type: string
         required: false
         default: ""
@@ -24,18 +28,20 @@ on:
 jobs:
   markdownlint:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/devcontainers/javascript-node:20
-
+    
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: ${{ inputs.node-version }}
 
       - name: Install MarkdownLint
         run: |
-          npm install -g markdownlint-cli
+          npm install -g markdownlint-cli@${{ inputs.markdownlint-version }}
           npm list -g --depth=0
 
       - name: Run MarkdownLint
-        working-directory: ${{ inputs.working-directory }}
-        run: |
-          npx markdownlint "**/*.md" --dot --config ${{ inputs.config-file }} ${{ inputs.extra-flags }}
+        run: markdownlint "**/*.md" --dot --config ${{ inputs.config-file }} ${{ inputs.extra-flags }}

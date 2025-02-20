@@ -1,34 +1,45 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Reusable - GolangCI Lint
 
 on:
   workflow_call:
     inputs:
-      working-directory:
+      go-version:
+        description: The version of golang to use
         type: string
-        description: The directory to lint.
         required: false
-        default: "."
+        default: stable
+      golangci-lint-version:
+        description: The version of golangci-lint to install
+        type: string
+        required: false
+        default: latest
+      config-file:
+        description: Path to the golangci-lint config file
+        type: string
+        required: false
+        default: .golangci.yml
       extra-flags:
-        required: false
+        description: Additional CLI flags for golangci-lint
         type: string
+        required: false
         default: ""
-        description: Extra CLI flags.
 
 jobs:
   golangci-lint:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v5.3.0
+        with:
+          go-version: ${{ inputs.go-version }}
       
       - name: Install GolangCI Lint
-        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@${{ inputs.golangci-lint-version }}
 
       - name: Run golangci-lint
-        working-directory: ${{ inputs.working-directory }}
-        run: golangci-lint run ${{ inputs.extra-flags }}
+        run: golangci-lint run --config=${{ inputs.config-file }} ${{ inputs.extra-flags }}

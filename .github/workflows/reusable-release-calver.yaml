@@ -4,6 +4,11 @@ name: Reusable - Release Calver
 
 on:
   workflow_call:
+    secrets:
+      BOT_APP_ID:
+        required: true
+      BOT_APP_PRIVATE_KEY:
+        required: true
     inputs:
       dry-run:
         type: boolean
