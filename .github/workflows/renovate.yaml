@@ -19,8 +19,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/renovate.yaml"
-      - ".renovate/*.json5"
-      - "renovate.json5"
+      - ".github/renovate.json5"
 
   # Scheduled hourly
   schedule:
@@ -37,4 +36,4 @@ jobs:
     with:
       dry-run: "${{ inputs.dry-run == true || github.event_name == 'pull_request' }}"
       log-level: "${{ inputs.log-level || 'debug' }}"
-      config-file: renovate.json5
+      config-file: ".github/renovate.json5"

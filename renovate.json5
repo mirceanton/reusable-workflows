@@ -1,5 +1,0 @@
-{
-	"extends": [
-		"github>mirceanton/reusable-workflows//.renovate/default.json5"
-	]
-}
