@@ -1,6 +1,0 @@
----
-area/go:
-  - changed-files:
-      - any-glob-to-any-file: "go.mod"
-      - any-glob-to-any-file: "go.sum"
-      - any-glob-to-any-file: "*.go"
