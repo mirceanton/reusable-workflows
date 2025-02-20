@@ -19,6 +19,7 @@ on:
     paths:
       - ".github/workflows/git-release-semver.yaml"
       - ".github/workflows/reusable-**"
+      - ".github/configs/release.config.mjs"
 
 jobs:
   release:
@@ -26,3 +27,4 @@ jobs:
     secrets: inherit
     with:
       dry-run: ${{ inputs.dry-run || github.event_name == 'pull_request' }}
+      config-file: ./.github/configs/release.config.mjs
