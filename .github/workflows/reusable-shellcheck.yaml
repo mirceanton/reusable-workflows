@@ -3,17 +3,36 @@
 name: Reusable - ShellCheck
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      shellcheck-version:
+        description: The version of shellcheck to install
+        type: string
+        required: false
+        default: stable
+      config-file:
+        description: Path to the shellcheck config file
+        type: string
+        required: false
+        default: .shellcheckrc
+      extra-flags:
+        description: Additional CLI flags for shellcheck
+        type: string
+        required: false
+        default: ""
 
 jobs:
-  lint:
+  shellcheck:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install ShellCheck
-        run: sudo apt-get install -y shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck=${{ inputs.shellcheck-version }}
 
       - name: Run ShellCheck
-        run: find . -name "*.sh" -exec shellcheck {} +
+        run: find . -name "*.sh" -exec shellcheck --rc-path=${{ inputs.config-file }} ${{ inputs.extra-flags }} {} +
