@@ -44,12 +44,14 @@ jobs:
       - name: Run actionlint
         shell: bash
         run: |
-          CONFIG_FLAGS=""
+          read -ra ARGS <<< "${{ inputs.extra-flags }}"
+          
           if [[ -n "${{ inputs.config-file }}" ]]; then
             echo "Using provided config file: ${{ inputs.config-file }}"
-            CONFIG_FLAGS="-config-file ${{ inputs.config-file }}"
+            ARGS+=("-config-file" "${{ inputs.config-file }}")
           else
             echo "Using no configuration file."
           fi
-
-          actionlint "$CONFIG_FLAGS" ${{ inputs.extra-flags }}
+          
+          # Execute command with all arguments
+          actionlint "${ARGS[@]}"
