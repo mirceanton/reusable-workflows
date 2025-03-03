@@ -21,15 +21,15 @@ on:
         required: false
         default: latest
       config-file:
-        description: Path to the commitlint config file
+        description: Path to the commitlint config file (optional)
         type: string
         required: false
-        default: .commitlintrc.json
+        default: ""
       extra-flags:
         description: Additional CLI flags for commitlint
         type: string
         required: false
-        default: --color --verbose
+        default: "--color --verbose"
 
 jobs:
   commitlint:
@@ -53,8 +53,14 @@ jobs:
 
       - name: Validate PR commits with CommitLint
         if: github.event_name == 'pull_request'
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          echo "$PR_TITLE" > pr-title.txt
-          npx commitlint --edit=pr-title.txt --config=${{ inputs.config-file }} ${{ inputs.extra-flags }}
+          CONFIG_FLAGS=""
+          if [[ -n "${{ inputs.config-file }}" ]]; then
+            echo "Using provided config file: ${{ inputs.config-file }}"
+            CONFIG_FLAGS="--config=${{ inputs.config-file }}"
+          else
+            echo "Using no configuration file."
+          fi
+
+          echo "${{ github.event.pull_request.title }}" > pr-title.txt
+          npx commitlint $CONFIG_FLAGS --edit=pr-title.txt ${{ inputs.extra-flags }}
