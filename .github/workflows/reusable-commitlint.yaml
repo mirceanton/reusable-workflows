@@ -53,6 +53,7 @@ jobs:
 
       - name: Validate PR commits with CommitLint
         if: github.event_name == 'pull_request'
+        shell: bash
         run: |
           CONFIG_FLAGS=""
           if [[ -n "${{ inputs.config-file }}" ]]; then

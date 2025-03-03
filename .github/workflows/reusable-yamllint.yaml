@@ -52,6 +52,7 @@ jobs:
         run: yamllint --version
 
       - name: Run yamllint
+        shell: bash
         run: |
           CONFIG_FLAGS=""
           if [[ -n "${{ inputs.config-file }}" ]]; then
