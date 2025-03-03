@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Reusable - YAMLlint
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: The version of Python to use.
+        type: string
+        required: false
+        default: "3.11"
+      yamllint-version:
+        description: The version of yamllint to use.
+        type: string
+        required: false
+        default: latest
+      config-file:
+        description: Path to the yamllint config file (optional)
+        type: string
+        required: false
+        default: ""
+      extra-flags:
+        description: Additional CLI flags for yamllint
+        type: string
+        required: false
+        default: ""
+
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Python
+        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: pip
+
+      - name: Install YAMLlint
+        run: |
+          python -m pip install --upgrade pip
+          if [[ "${{ inputs.yamllint-version }}" == "latest" ]]; then
+            pip install yamllint
+          else
+            pip install yamllint==${{ inputs.yamllint-version }}
+          fi
+
+      - name: Show tool version
+        run: yamllint --version
+
+      - name: Run yamllint
+        shell: bash
+        run: |
+          CONFIG_FLAGS=""
+          if [[ -n "${{ inputs.config-file }}" ]]; then
+            echo "Using provided config file: ${{ inputs.config-file }}"
+            CONFIG_FLAGS="--config-file=${{ inputs.config-file }}"
+          else
+            echo "Using no configuration file."
+          fi
+
+          yamllint $CONFIG_FLAGS ${{ inputs.extra-flags }} .

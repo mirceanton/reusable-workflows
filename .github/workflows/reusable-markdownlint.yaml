@@ -16,15 +16,15 @@ on:
         required: false
         default: latest
       config-file:
-        description: Path to the markdownlint config file
+        description: Path to the markdownlint config file (optional)
         type: string
         required: false
-        default: .markdownlint.yaml
+        default: ""
       extra-flags:
         description: Additional CLI flags for markdownlint
         type: string
         required: false
-        default: ""
+        default: "--dot"
 
 jobs:
   markdownlint:
@@ -45,4 +45,14 @@ jobs:
           npm list -g --depth=0
 
       - name: Run MarkdownLint
-        run: markdownlint "**/*.md" --dot --config ${{ inputs.config-file }} ${{ inputs.extra-flags }}
+        shell: bash
+        run: |
+          CONFIG_FLAGS=""
+          if [[ -n "${{ inputs.config-file }}" ]]; then
+            echo "Using provided config file: ${{ inputs.config-file }}"
+            CONFIG_FLAGS="--config ${{ inputs.config-file }}"
+          else
+            echo "Using default markdownlint configuration"
+          fi
+          
+          markdownlint "**/*.md" $CONFIG_FLAGS ${{ inputs.extra-flags }}

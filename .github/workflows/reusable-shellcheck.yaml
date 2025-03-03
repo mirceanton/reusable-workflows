@@ -11,15 +11,20 @@ on:
         required: false
         default: latest
       config-file:
-        description: Path to the shellcheck config file
+        description: Path to the shellcheck config file (optional)
         type: string
         required: false
-        default: .shellcheckrc
+        default: ""
       extra-flags:
         description: Additional CLI flags for shellcheck
         type: string
         required: false
         default: ""
+      file-regex:
+        description: file pattern to find shell scripts (default finds all .sh files recursively)
+        type: string
+        required: false
+        default: "*.sh"
 
 jobs:
   shellcheck:
@@ -31,4 +36,14 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run ShellCheck
-        run: find . -name "*.sh" -exec shellcheck --rcfile=RCFILE=${{ inputs.config-file }} ${{ inputs.extra-flags }} {} +
+        shell: bash
+        run: |
+          CONFIG_FLAGS=""
+          if [[ -n "${{ inputs.config-file }}" ]]; then
+            echo "Using provided config file: ${{ inputs.config-file }}"
+            CONFIG_FLAGS="--rcfile=${{ inputs.config-file }}"
+          else
+            echo "Using no configuration file."
+          fi
+
+          find . -name ${{ inputs.file-regex }} -exec shellcheck $CONFIG_FLAGS ${{ inputs.extra-flags }} {} \;
