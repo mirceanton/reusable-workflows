@@ -13,11 +13,11 @@ jobs:
     with:
       config-file: ./.github/configs/actionlint.yaml
 
-  yamlfmt:
-    uses: ./.github/workflows/reusable-yamlfmt.yaml
+  yamllint:
+    uses: ./.github/workflows/reusable-yamllint.yaml
     secrets: inherit
     with:
-      config-file: .github/configs/yamlfmt.yaml
+      config-file: .github/configs/yamllint.yaml
 
   shellcheck:
     uses: ./.github/workflows/reusable-shellcheck.yaml
