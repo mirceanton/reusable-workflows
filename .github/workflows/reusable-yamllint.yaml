@@ -62,4 +62,4 @@ jobs:
             echo "Using no configuration file."
           fi
 
-          yamllint $CONFIG_FLAGS ${{ inputs.extra-flags }} .
+          yamllint "$CONFIG_FLAGS" ${{ inputs.extra-flags }} .

@@ -55,4 +55,4 @@ jobs:
             echo "Using default markdownlint configuration"
           fi
 
-          markdownlint "**/*.md" $CONFIG_FLAGS ${{ inputs.extra-flags }}
+          markdownlint "**/*.md" "$CONFIG_FLAGS" ${{ inputs.extra-flags }}

@@ -51,4 +51,4 @@ jobs:
             echo "Using default golangci-lint configuration"
           fi
 
-          golangci-lint run $CONFIG_FLAGS ${{ inputs.extra-flags }}
+          golangci-lint run "$CONFIG_FLAGS" ${{ inputs.extra-flags }}

@@ -46,4 +46,4 @@ jobs:
             echo "Using no configuration file."
           fi
 
-          find . -name ${{ inputs.file-regex }} -exec shellcheck $CONFIG_FLAGS ${{ inputs.extra-flags }} {} \;
+          find . -name ${{ inputs.file-regex }} -exec shellcheck "$CONFIG_FLAGS" ${{ inputs.extra-flags }} {} \;

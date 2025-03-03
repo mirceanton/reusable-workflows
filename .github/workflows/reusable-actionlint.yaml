@@ -52,4 +52,4 @@ jobs:
             echo "Using no configuration file."
           fi
 
-          actionlint $CONFIG_FLAGS ${{ inputs.extra-flags }}
+          actionlint "$CONFIG_FLAGS" ${{ inputs.extra-flags }}

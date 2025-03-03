@@ -65,4 +65,4 @@ jobs:
             echo "Using no configuration file."
           fi
 
-          echo "$TITLE" | npx commitlint $CONFIG_FLAGS ${{ inputs.extra-flags }}
+          echo "$TITLE" | npx commitlint "$CONFIG_FLAGS" ${{ inputs.extra-flags }}
