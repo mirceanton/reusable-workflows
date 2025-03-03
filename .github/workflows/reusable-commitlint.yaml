@@ -54,14 +54,18 @@ jobs:
       - name: Validate PR commits with CommitLint
         if: github.event_name == 'pull_request'
         shell: bash
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
         run: |
-          CONFIG_FLAGS=""
+          set -xe
+          read -ra ARGS <<< "${{ inputs.extra-flags }}"
+
           if [[ -n "${{ inputs.config-file }}" ]]; then
             echo "Using provided config file: ${{ inputs.config-file }}"
-            CONFIG_FLAGS="--config=${{ inputs.config-file }}"
+            ARGS+=("--extends=${{ inputs.config-file }}")
           else
             echo "Using no configuration file."
           fi
 
-          echo "${{ github.event.pull_request.title }}" > pr-title.txt
-          npx commitlint $CONFIG_FLAGS --edit=pr-title.txt ${{ inputs.extra-flags }}
+          # Execute command with all arguments
+          echo "$TITLE" | npx commitlint "${ARGS[@]}"

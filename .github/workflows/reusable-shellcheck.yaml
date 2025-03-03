@@ -38,12 +38,15 @@ jobs:
       - name: Run ShellCheck
         shell: bash
         run: |
-          CONFIG_FLAGS=""
+          set -xe
+          read -ra ARGS <<< "${{ inputs.extra-flags }}"
+
           if [[ -n "${{ inputs.config-file }}" ]]; then
             echo "Using provided config file: ${{ inputs.config-file }}"
-            CONFIG_FLAGS="--rcfile=${{ inputs.config-file }}"
+            ARGS+=("--rcfile=${{ inputs.config-file }}")
           else
             echo "Using no configuration file."
           fi
 
-          find . -name ${{ inputs.file-regex }} -exec shellcheck $CONFIG_FLAGS ${{ inputs.extra-flags }} {} \;
+          # Execute command with all arguments
+          find . -name ${{ inputs.file-regex }} -exec shellcheck "${ARGS[@]}" {} \;

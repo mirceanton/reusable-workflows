@@ -9,7 +9,7 @@ on:
         type: string
         description: The Terraform version to use.
         required: false
-        default: "1.10.5" #! TODO: renovate annotation
+        default: "1.10.5" # !TODO: renovate annotation
 
 jobs:
   terraform-fmt:

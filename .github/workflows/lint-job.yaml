@@ -10,27 +10,23 @@ jobs:
   actionlint:
     uses: ./.github/workflows/reusable-actionlint.yaml
     secrets: inherit
-    with:
-      config-file: ./.github/configs/actionlint.yaml
-
-  yamllint:
-    uses: ./.github/workflows/reusable-yamllint.yaml
-    secrets: inherit
-    with:
-      config-file: .github/configs/yamllint.yaml
-
-  shellcheck:
-    uses: ./.github/workflows/reusable-shellcheck.yaml
-    secrets: inherit
-
-  markdownlint:
-    uses: ./.github/workflows/reusable-markdownlint.yaml
-    secrets: inherit
-    with:
-      config-file: .github/configs/.markdownlint.yaml
 
   commitlint:
     uses: ./.github/workflows/reusable-commitlint.yaml
     secrets: inherit
     with:
       config-file: ./.github/configs/commitlint.config.mjs
+
+  markdownlint:
+    uses: ./.github/workflows/reusable-markdownlint.yaml
+    secrets: inherit
+
+  shellcheck:
+    uses: ./.github/workflows/reusable-shellcheck.yaml
+    secrets: inherit
+
+  yamllint:
+    uses: ./.github/workflows/reusable-yamllint.yaml
+    secrets: inherit
+    with:
+      config-file: .github/configs/yamllint.yaml

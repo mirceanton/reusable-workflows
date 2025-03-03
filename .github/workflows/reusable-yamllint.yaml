@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup Python
-        uses: actions/setup-python@b64ffcaf5b410884ad320a9cfac8866006a109aa # v4.8.0
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -53,12 +53,15 @@ jobs:
       - name: Run yamllint
         shell: bash
         run: |
-          CONFIG_FLAGS=""
+          set -xe
+          read -ra ARGS <<< "${{ inputs.extra-flags }}"
+
           if [[ -n "${{ inputs.config-file }}" ]]; then
             echo "Using provided config file: ${{ inputs.config-file }}"
-            CONFIG_FLAGS="--config-file=${{ inputs.config-file }}"
+            ARGS+=("--config-file" "${{ inputs.config-file }}")
           else
             echo "Using no configuration file."
           fi
 
-          yamllint $CONFIG_FLAGS ${{ inputs.extra-flags }} .
+          # Execute command with all arguments
+          yamllint "${ARGS[@]}" .

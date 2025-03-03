@@ -47,12 +47,15 @@ jobs:
       - name: Run MarkdownLint
         shell: bash
         run: |
-          CONFIG_FLAGS=""
+          set -xe
+          read -ra ARGS <<< "${{ inputs.extra-flags }}"
+
           if [[ -n "${{ inputs.config-file }}" ]]; then
             echo "Using provided config file: ${{ inputs.config-file }}"
-            CONFIG_FLAGS="--config ${{ inputs.config-file }}"
+            ARGS+=("--config ${{ inputs.config-file }}")
           else
-            echo "Using default markdownlint configuration"
+            echo "Using no configuration file."
           fi
-          
-          markdownlint "**/*.md" $CONFIG_FLAGS ${{ inputs.extra-flags }}
+
+          # Execute command with all arguments
+          markdownlint "**/*.md" "${ARGS[@]}"
