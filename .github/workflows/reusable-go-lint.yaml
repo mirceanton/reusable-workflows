@@ -41,4 +41,14 @@ jobs:
         run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@${{ inputs.golangci-lint-version }}
 
       - name: Run golangci-lint
-        run: golangci-lint run --config=${{ inputs.config-file }} ${{ inputs.extra-flags }}
+        shell: bash
+        run: |
+          CONFIG_FLAGS=""
+          if [[ -n "${{ inputs.config-file }}" ]]; then
+            echo "Using provided config file: ${{ inputs.config-file }}"
+            CONFIG_FLAGS="--config=${{ inputs.config-file }}"
+          else
+            echo "Using default golangci-lint configuration"
+          fi
+
+          golangci-lint run $CONFIG_FLAGS ${{ inputs.extra-flags }}
