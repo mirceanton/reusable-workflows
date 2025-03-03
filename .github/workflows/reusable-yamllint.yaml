@@ -59,10 +59,10 @@ jobs:
 
           if [[ -n "${{ inputs.config-file }}" ]]; then
             echo "Using provided config file: ${{ inputs.config-file }}"
-            ARGS+=("-config-file" "${{ inputs.config-file }}")
+            ARGS+=("--config-file" "${{ inputs.config-file }}")
           else
             echo "Using no configuration file."
           fi
 
           # Execute command with all arguments
-          yamllint  "${ARGS[@]}" .
+          yamllint "${ARGS[@]}" .
