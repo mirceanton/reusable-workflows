@@ -60,7 +60,9 @@ jobs:
           password: "${{ secrets.GHCR_RW_TOKEN }}"
 
       - name: Run GoReleaser
-        run: goreleaser release --config ${{ inputs.config-file }} ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
+        run: |
+          git config --global --add safe.directory
+          goreleaser release --config ${{ inputs.config-file }} ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
           TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: should use app token but it doesnt work :(
