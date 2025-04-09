@@ -5,12 +5,7 @@ name: Reusable - YAMLlint
 on:
   workflow_call:
     inputs:
-      python-version:
-        description: The version of Python to use.
-        type: string
-        required: false
-        default: "3.11"
-      yamllint-version:
+      version:
         description: The version of yamllint to use.
         type: string
         required: false
@@ -29,26 +24,10 @@ on:
 jobs:
   yamllint:
     runs-on: ubuntu-latest
+    container: ghcr.io/mirceanton/gha-runner-yamllint:${{ inputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Setup Python
-        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
-        with:
-          python-version: ${{ inputs.python-version }}
-
-      - name: Install YAMLlint
-        run: |
-          python -m pip install --upgrade pip
-          if [[ "${{ inputs.yamllint-version }}" == "latest" ]]; then
-            pip install yamllint
-          else
-            pip install yamllint==${{ inputs.yamllint-version }}
-          fi
-
-      - name: Show tool version
-        run: yamllint --version
 
       - name: Run yamllint
         shell: bash
