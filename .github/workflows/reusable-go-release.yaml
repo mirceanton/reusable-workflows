@@ -61,7 +61,7 @@ jobs:
 
       - name: Run GoReleaser
         run: |
-          git config --global --add safe.directory
+          git config --global --add safe.directory .
           goreleaser release --config ${{ inputs.config-file }} ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
