@@ -36,9 +36,7 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/goreleaser/goreleaser:${{ inputs.version }}
-
+    container: ghcr.io/goreleaser/goreleaser:${{ inputs.version }}
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1.12.0
