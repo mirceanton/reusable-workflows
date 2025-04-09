@@ -32,8 +32,9 @@ jobs:
 
       - name: Run golangci-lint
         shell: bash
+        env:
+          GOFLAGS: -buildvcs=false
         run: |
-          git config --global --add safe.directory .
           set -xe
           read -ra ARGS <<< "${{ inputs.extra-flags }}"
 
