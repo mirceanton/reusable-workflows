@@ -11,13 +11,12 @@ on:
         required: false
         type: boolean
 
-  # Scheduled daily
   schedule:
     - cron: "0 0 * * *"
 
   pull_request:
     paths:
-      - ".github/workflows/git-release-semver.yaml"
+      - ".github/workflows/release.yaml"
       - ".github/workflows/reusable-**"
       - ".github/configs/release.config.mjs"
 

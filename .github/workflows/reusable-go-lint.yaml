@@ -5,11 +5,7 @@ name: Reusable - GolangCI Lint
 on:
   workflow_call:
     inputs:
-      go-version:
-        description: The version of golang to use
-        type: string
-        required: true
-      golangci-lint-version:
+      version:
         description: The version of golangci-lint to install
         type: string
         required: true
@@ -22,23 +18,17 @@ on:
         description: Additional CLI flags for golangci-lint
         type: string
         required: false
-        default: ""
+        default: "-buildvcs=false"
 
 jobs:
   golangci-lint:
     runs-on: ubuntu-latest
-
+    container: golangci/golangci-lint:${{ inputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Setup Go
-        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
         with:
-          go-version: ${{ inputs.go-version }}
-
-      - name: Install GolangCI Lint
-        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@${{ inputs.golangci-lint-version }}
+          fetch-depth: 0
 
       - name: Run golangci-lint
         shell: bash

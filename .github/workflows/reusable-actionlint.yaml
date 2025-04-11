@@ -5,12 +5,7 @@ name: Reusable - ActionLint
 on:
   workflow_call:
     inputs:
-      go-version:
-        description: The version of golang to use.
-        type: string
-        required: false
-        default: stable
-      actionlint-version:
+      version:
         description: The version of actionlint to use.
         type: string
         required: false
@@ -29,17 +24,10 @@ on:
 jobs:
   actionlint:
     runs-on: ubuntu-latest
+    container: ghcr.io/mirceanton/gha-runner-actionlint:${{ inputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Setup Go
-        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
-        with:
-          go-version: ${{ inputs.go-version }}
-
-      - name: Install ActionLint
-        run: go install github.com/rhysd/actionlint/cmd/actionlint@${{ inputs.actionlint-version }}
 
       - name: Run actionlint
         shell: bash
