@@ -5,12 +5,7 @@ name: Reusable - Markdown Lint
 on:
   workflow_call:
     inputs:
-      node-version:
-        description: The version of Node.js to use
-        type: string
-        required: false
-        default: lts/*
-      markdownlint-version:
+      version:
         description: The version of markdownlint-cli to install
         type: string
         required: false
@@ -29,20 +24,10 @@ on:
 jobs:
   markdownlint:
     runs-on: ubuntu-latest
-
+    container: ghcr.io/mirceanton/gha-runner-markdownlint:${{ inputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
-        with:
-          node-version: ${{ inputs.node-version }}
-
-      - name: Install MarkdownLint
-        run: |
-          npm install -g markdownlint-cli@${{ inputs.markdownlint-version }}
-          npm list -g --depth=0
 
       - name: Run MarkdownLint
         shell: bash
