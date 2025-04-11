@@ -76,7 +76,7 @@ jobs:
 
           if [[ "${{ inputs.dry-run }}" == "true" ]]; then
             echo "Running in dry-run mode"
-            ARGS+=("--dry-run")
+            ARGS+=("--snapshot")
           fi
 
           goreleaser release "${ARGS[@]}"
