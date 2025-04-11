@@ -5,15 +5,16 @@ name: Reusable - Terraform FMT
 on:
   workflow_call:
     inputs:
-      terraform-version:
+      version:
         type: string
         description: The Terraform version to use.
         required: false
-        default: "1.10.5" # !TODO: renovate annotation
+        default: "latest"
 
 jobs:
   terraform-fmt:
     runs-on: ubuntu-latest
+    container: hashicorp/terraform:${{ inputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
