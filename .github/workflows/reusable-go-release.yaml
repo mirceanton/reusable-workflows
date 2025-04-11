@@ -59,9 +59,23 @@ jobs:
           password: "${{ secrets.GHCR_RW_TOKEN }}"
 
       - name: Run GoReleaser
-        run: |
-          git config --global --add safe.directory .
-          goreleaser release --config ${{ inputs.config-file }} ${{ inputs.extra-flags }} ${{ inputs.dry-run && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: should use app token but it doesnt work :(
+          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}"
+        run: |
+          set -xe
+          read -ra ARGS <<< "${{ inputs.extra-flags }}"
+
+          if [[ -n "${{ inputs.config-file }}" ]]; then
+            echo "Using provided config file: ${{ inputs.config-file }}"
+            ARGS+=("--config=${{ inputs.config-file }}")
+          else
+            echo "Using no configuration file."
+          fi
+
+          if [[ "${{ inputs.dry-run }}" == "true" ]]; then
+            echo "Running in dry-run mode"
+            ARGS+=("--dry-run")
+          fi
+
+          goreleaser release "${ARGS[@]}"
