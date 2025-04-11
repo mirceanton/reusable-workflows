@@ -18,7 +18,7 @@ on:
         description: Additional CLI flags for golangci-lint
         type: string
         required: false
-        default: ""
+        default: "-buildvcs=false"
 
 jobs:
   golangci-lint:
