@@ -1,0 +1,48 @@
+---
+name: Reusable - Docker Image Vulnerability Scan
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        description: 'Docker image to scan (with tag)'
+        required: true
+        type: string
+      severity_levels:
+        description: 'Comma-separated list of severity levels to scan for'
+        required: false
+        type: string
+        default: 'CRITICAL,HIGH,MEDIUM'
+      ignore_unfixed:
+        description: 'Whether to ignore vulnerabilities without fixes'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  scan:
+    name: Scan Docker Image with Trivy
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      
+    steps:
+      - name: Create directory for scan results
+        run: mkdir -p trivy-results
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v.0.30.0
+        with:
+          image-ref: ${{ inputs.image_name }}
+          format: 'sarif'
+          output: 'trivy-results/results.sarif'
+          severity: ${{ inputs.severity_levels }}
+          ignore-unfixed: ${{ inputs.ignore_unfixed }}
+          vuln-type: 'os,library'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results/results.sarif'
+          category: 'trivy'
