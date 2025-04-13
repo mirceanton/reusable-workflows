@@ -36,7 +36,6 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
-    container: ghcr.io/goreleaser/goreleaser:${{ inputs.version }}
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1.12.0
@@ -58,25 +57,18 @@ jobs:
           username: "${{ github.actor }}"
           password: "${{ secrets.GHCR_RW_TOKEN }}"
 
+      - name: Setup Go
+        uses: actions/setup-go@v5.4.0
+        with: { go-version-file: go.mod }
+
       - name: Run GoReleaser
-        shell: bash
+        uses: goreleaser/goreleaser-action:v6.3.0
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}"
-        run: |
-          set -xe
-          read -ra ARGS <<< "${{ inputs.extra-flags }}"
-
-          if [[ -n "${{ inputs.config-file }}" ]]; then
-            echo "Using provided config file: ${{ inputs.config-file }}"
-            ARGS+=("--config=${{ inputs.config-file }}")
-          else
-            echo "Using no configuration file."
-          fi
-
-          if [[ "${{ inputs.dry-run }}" == "true" ]]; then
-            echo "Running in dry-run mode"
-            ARGS+=("--snapshot")
-          fi
-
-          goreleaser release "${ARGS[@]}"
+          TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: should use app token but it doesnt work :(
+        with:
+          version: ${{ inputs.version }}
+          args: |
+            --config=${{ inputs.config-file }}
+            ${{ inputs.dry-run && '--snapshot' || '' }}
+            ${{ inputs.extra-flags }}
