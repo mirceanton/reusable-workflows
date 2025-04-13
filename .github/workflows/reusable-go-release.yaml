@@ -62,7 +62,7 @@ jobs:
         with: { go-version-file: go.mod }
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action:v6.3.0
+        uses: goreleaser/goreleaser-action@v6.3.0
         env:
           GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
           TAP_GITHUB_TOKEN: "${{ secrets.GHCR_RW_TOKEN }}" # FIXME: should use app token but it doesnt work :(
